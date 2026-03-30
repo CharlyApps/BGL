@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zombicide 2nd Ed — Guía Rápida</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0d; color: #e8e0d0;
+    font-family: Georgia, 'Times New Roman', serif;
+    min-height: 100vh;
+    background-image: radial-gradient(ellipse at 20% 50%, #1a0a0a 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 20%, #0a0a1a 0%, transparent 60%);
+  }
+  header {
+    border-bottom: 2px solid #8b0000;
+    padding: 14px 16px 12px;
+    background: linear-gradient(180deg, #1a0000 0%, #0d0d0d 100%);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sub { font-size: 10px; letter-spacing: 4px; color: #8b0000; text-transform: uppercase; font-family: monospace; }
+  .back-btn{color:#aa5533;font-size:12px;text-decoration:none;border:1px solid #3a1a08;padding:4px 10px;border-radius:4px;font-family:monospace;letter-spacing:1px;transition:all 0.15s;flex-shrink:0}
+  .back-btn:hover{background:#1a0a00;color:#e8c84a}
+  .nav { display: flex; gap: 4px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid #1e1e1e; background: #0f0f0f; }
+  .nav-btn {
+    background: transparent; border: 1px solid #2a2a2a; color: #666;
+    padding: 7px 14px; cursor: pointer; font-size: 11px; border-radius: 2px;
+    text-transform: uppercase; letter-spacing: 1px; font-family: monospace; transition: all 0.15s;
+  }
+  .nav-btn.active { background: #8b0000; border-color: #8b0000; color: #fff; }
+  .container { padding: 14px 16px; max-width: 720px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* PHASES */
+  .section-label { font-size: 10px; color: #555; font-family: monospace; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+  .phases { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 14px; }
+  .phase-btn { background: #1a1a1a; border: 1px solid #333; color: #ccc; padding: 9px 14px; cursor: pointer; font-size: 12px; border-radius: 3px; transition: all 0.15s; font-family: Georgia, serif; }
+  #phase-panel { display: none; border-radius: 4px; overflow: hidden; margin-bottom: 18px; }
+  #phase-panel.visible { display: block; }
+  .phase-desc { padding: 9px 14px; font-size: 12px; font-family: monospace; border-bottom: 1px solid #1e1e1e; }
+  .actions-row { padding: 10px; display: flex; gap: 7px; flex-wrap: wrap; }
+  .action-btn { background: #151515; border: 1px solid #2a2a2a; color: #999; padding: 7px 11px; cursor: pointer; font-size: 12px; border-radius: 3px; transition: all 0.15s; font-family: Georgia, serif; }
+  #action-detail { display: none; margin: 0 10px 10px; background: #111; border: 1px solid #252525; border-radius: 3px; overflow: hidden; }
+  #action-detail.visible { display: block; }
+  .stats-row { display: flex; flex-wrap: wrap; border-bottom: 1px solid #1e1e1e; }
+  .stat-cell { padding: 10px 14px; flex: 1; min-width: 130px; border-right: 1px solid #1e1e1e; }
+  .stat-cell:last-child { border-right: none; }
+  .stat-label { font-size: 9px; color: #555; font-family: monospace; letter-spacing: 2px; margin-bottom: 3px; text-transform: uppercase; }
+  .stat-value { font-size: 17px; font-weight: bold; margin-bottom: 2px; }
+  .stat-note { font-size: 11px; color: #666; }
+  .detail-body { padding: 10px 14px; border-bottom: 1px solid #1a1a1a; font-size: 13px; color: #ccc; line-height: 1.6; }
+  .tips-section { padding: 9px 14px; }
+  .tips-label { font-size: 9px; color: #555; font-family: monospace; letter-spacing: 2px; margin-bottom: 6px; text-transform: uppercase; }
+  .tip { display: flex; gap: 7px; margin-bottom: 4px; align-items: flex-start; }
+  .tip-arrow { color: #8b0000; font-size: 11px; margin-top: 2px; flex-shrink: 0; }
+  .tip-text { font-size: 12px; color: #888; line-height: 1.5; }
+  .tags { padding: 6px 14px 10px; display: flex; gap: 5px; flex-wrap: wrap; }
+  .tag { font-size: 9px; padding: 2px 7px; border-radius: 2px; font-family: monospace; letter-spacing: 1px; }
+  #empty-state { text-align: center; padding: 36px 20px; border: 1px solid #1e1e1e; border-radius: 4px; background: #0f0f0f; }
+  .empty-icon { font-size: 30px; margin-bottom: 8px; }
+  .empty-text { color: #444; font-size: 11px; font-family: monospace; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; }
+  .empty-sub { color: #333; font-size: 11px; }
+
+  /* DANGER */
+  .dp-grid { display: grid; grid-template-columns: repeat(2,1fr); border: 1px solid #2a2a2a; border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+  .dp-cell { padding: 14px; border-right: 1px solid #1e1e1e; border-bottom: 1px solid #1e1e1e; background: #111; }
+  .dp-cell:nth-child(2n) { border-right: none; }
+  .dp-badge { display: inline-block; color: #000; font-family: monospace; font-size: 9px; font-weight: bold; letter-spacing: 2px; padding: 2px 8px; border-radius: 2px; margin-bottom: 7px; }
+  .dp-row { font-size: 12px; color: #aaa; margin-bottom: 3px; }
+  .dp-row .y { color: #e8c84a; }
+  .dp-row .r { color: #e74c3c; }
+  .dp-footer { border: 1px solid #2a2a2a; border-radius: 4px; background: #111; padding: 10px 14px; font-size: 11px; color: #555; font-family: monospace; line-height: 1.8; }
+
+  /* SKILLS */
+  .skills-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; align-items: center; }
+  .search-box { flex: 1; min-width: 150px; background: #111; border: 1px solid #2a2a2a; color: #ddd; padding: 8px 12px; font-size: 13px; font-family: Georgia, serif; border-radius: 3px; outline: none; }
+  .search-box:focus { border-color: #8b0000; }
+  .search-box::placeholder { color: #444; }
+  .cat-filters { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 8px; }
+  .cat-btn { background: #111; border: 1px solid #2a2a2a; color: #666; padding: 5px 10px; cursor: pointer; font-size: 10px; border-radius: 2px; text-transform: uppercase; letter-spacing: 1px; font-family: monospace; transition: all 0.15s; }
+  .skills-count { font-size: 10px; color: #444; font-family: monospace; letter-spacing: 1px; margin-bottom: 8px; }
+  .skills-list { display: flex; flex-direction: column; gap: 5px; }
+  .skill-card { background: #111; border: 1px solid #1e1e1e; border-radius: 3px; cursor: pointer; transition: border-color 0.15s; }
+  .skill-card:hover { border-color: #333; }
+  .skill-header { display: flex; align-items: center; gap: 8px; padding: 9px 12px; user-select: none; }
+  .skill-name { font-size: 13px; color: #e8c84a; font-weight: bold; flex: 1; }
+  .skill-cat-badge { font-size: 9px; padding: 2px 7px; border-radius: 2px; font-family: monospace; letter-spacing: 1px; color: #fff; flex-shrink: 0; }
+  .skill-expand { color: #444; font-size: 11px; flex-shrink: 0; transition: transform 0.2s; }
+  .skill-card.open .skill-expand { transform: rotate(180deg); }
+  .skill-body { display: none; padding: 9px 12px 11px; font-size: 12px; color: #999; line-height: 1.6; border-top: 1px solid #1a1a1a; }
+  .skill-card.open .skill-body { display: block; }
+  .no-results { text-align: center; padding: 30px; color: #444; font-family: monospace; font-size: 12px; }
+
+  footer { margin-top: 14px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+  footer span { font-size: 10px; color: #2a2a2a; font-family: monospace; }
+</style>
+</head>
+<body>
+<header>
+  <span style="font-size:24px">🧟</span>
+  <div>
+    <a href="index.html" class="back-btn">← Biblioteca</a>
+    <div>
+      <div class="sub">Guía de referencia</div>
+      <div class="main-title">ZOMBICIDE 2ND EDITION</div>
+    </div>
+  </div>
+</header>
+<div class="nav">
+  <button class="nav-btn active" id="navbtn-phases" onclick="switchTab('phases',this)">⚙️ Fases</button>
+  <button class="nav-btn" id="navbtn-danger" onclick="switchTab('danger',this)">⚡ Danger</button>
+  <button class="nav-btn" id="navbtn-skills" onclick="switchTab('skills',this)">🎯 Habilidades</button>
+  <button class="nav-btn" id="navbtn-expansiones" onclick="switchTab('expansiones',this)">🗺️ Expansiones</button>
+</div>
+<div class="container">
+
+  <!-- FASES -->
+  <div id="tab-phases" class="tab-panel active">
+    <div class="section-label">— Selecciona una fase</div>
+    <div class="phases">
+      <button class="phase-btn" id="pbtn-player" onclick="selectPhase('player')">🧑 Fase de Jugadores</button>
+      <button class="phase-btn" id="pbtn-zombie" onclick="selectPhase('zombie')">🧟 Fase de Zombies</button>
+      <button class="phase-btn" id="pbtn-end" onclick="selectPhase('end')">🌙 Fase Final</button>
+    </div>
+    <div id="phase-panel">
+      <div class="phase-desc" id="phase-desc"></div>
+      <div class="actions-row" id="actions-row"></div>
+      <div id="action-detail">
+        <div class="stats-row">
+          <div class="stat-cell"><div class="stat-label">Ruido</div><div class="stat-value" id="stat-noise"></div><div class="stat-note" id="stat-noise-note"></div></div>
+          <div class="stat-cell"><div class="stat-label">Adrenalina</div><div class="stat-value" id="stat-ap"></div><div class="stat-note" id="stat-ap-note"></div></div>
+        </div>
+        <div class="detail-body" id="detail-body"></div>
+        <div class="tips-section"><div class="tips-label">Notas tácticas</div><div id="tips-list"></div></div>
+        <div class="tags" id="tags-list"></div>
+      </div>
+    </div>
+    <div id="empty-state">
+      <div class="empty-icon">☣️</div>
+      <div class="empty-text">Selecciona una fase arriba</div>
+      <div class="empty-sub">toca una fase y luego una acción</div>
+    </div>
+    <footer><span>ORDEN: Jugadores → Zombies → Fase Final</span><span>3 ACCIONES/TURNO</span></footer>
+  </div>
+
+  <!-- DANGER -->
+  <div id="tab-danger" class="tab-panel">
+    <div class="dp-grid">
+      <div class="dp-cell"><div class="dp-badge" style="background:#3498db">AZUL</div><div class="dp-row"><span class="y">AP:</span> 0 – 6</div><div class="dp-row"><span class="r">Spawn:</span> Bajo</div><div class="dp-row" style="font-size:11px;color:#666">🎯 Skill inicial (ya tienes al empezar)</div></div>
+      <div class="dp-cell"><div class="dp-badge" style="background:#f1c40f">AMARILLO</div><div class="dp-row"><span class="y">AP:</span> 7 – 18</div><div class="dp-row"><span class="r">Spawn:</span> Medio</div><div class="dp-row" style="font-size:11px;color:#666">🎯 Eliges +1 Skill nueva</div></div>
+      <div class="dp-cell"><div class="dp-badge" style="background:#e67e22">NARANJA</div><div class="dp-row"><span class="y">AP:</span> 19 – 43</div><div class="dp-row"><span class="r">Spawn:</span> Alto</div><div class="dp-row" style="font-size:11px;color:#666">🎯 Eliges +1 Skill nueva</div></div>
+      <div class="dp-cell"><div class="dp-badge" style="background:#e74c3c">ROJO</div><div class="dp-row"><span class="y">AP:</span> 44+ AP</div><div class="dp-row"><span class="r">Spawn:</span> Máximo</div><div class="dp-row" style="font-size:11px;color:#666">🎯 +1 Skill (se repite cada vez)</div></div>
+    </div>
+    <div class="dp-footer">
+      ▸ Zombie eliminado = <span style="color:#f39c12">+1 AP</span><br>
+      ▸ Tomar Objetivo = <span style="color:#f39c12">+5 AP</span><br>
+      ▸ Pimpweapon Crate = <span style="color:#555">+0 AP</span> (solo te llevas el arma)<br>
+      ▸ Las Skills se aplican <span style="color:#e8c84a">inmediatamente</span> al subir de nivel<br>
+      ▸ Nivel de peligro = el sobreviviente con <span style="color:#e74c3c">más AP</span> del equipo
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div id="tab-skills" class="tab-panel">
+    <div class="skills-controls">
+      <input type="text" class="search-box" id="skill-search" placeholder="🔍  Buscar habilidad..." oninput="filterSkills()">
+    </div>
+    <div class="cat-filters" id="cat-filters"></div>
+    <div class="skills-count" id="skills-count"></div>
+    <div class="skills-list" id="skills-list"></div>
+    <div class="no-results" id="no-results" style="display:none">Sin resultados.</div>
+  </div>
+
+  <!-- EXPANSIONES -->
+  <div id="tab-expansiones" class="tab-panel">
+
+    <!-- Selector de expansión -->
+    <div class="section-label">— Selecciona una expansión</div>
+    <div class="phases" style="margin-bottom:16px">
+      <button class="phase-btn" id="pbtn-washington" onclick="selectExp('washington')" style="--exp-color:#4a90cc">🏛️ Washington Z.C.</button>
+      <button class="phase-btn" id="pbtn-pariz" onclick="selectExp('pariz')" style="--exp-color:#e8c84a">🗼 PariZ</button>
+    </div>
+    <div id="exp-panel" style="display:none"></div>
+    <div id="exp-empty" style="text-align:center;padding:30px 20px;border:1px solid #1e1e1e;border-radius:4px;background:#0f0f0f">
+      <div style="font-size:28px;margin-bottom:8px">🗺️</div>
+      <div style="color:#444;font-size:11px;font-family:monospace;letter-spacing:2px;text-transform:uppercase">Selecciona una expansión</div>
+    </div>
+
+  </div>
+
+</div>
+<script>
+const tagColors={ruido:"#e74c3c",adrenalina:"#f39c12",combate:"#8e44ad",peligro:"#c0392b",objetivo:"#27ae60",edificio:"#2980b9",inventario:"#16a085",equipo:"#d35400",libre:"#7f8c8d",spawn:"#922b21",movimiento:"#1a5276",turno:"#6c3483","posible-ruido":"#e67e22"};
+const phases={
+  player:{color:"#e8c84a",desc:"Cada jugador activa sus sobrevivientes uno por uno, en el orden que quiera.",actions:[
+    {id:"move",label:"🏃 Moverse",noise:0,ap:0,noiseNote:"Sin ruido",apNote:"Sin adrenalina",detail:"Muévete a una zona adyacente (N/S/E/O — nunca diagonal). Necesitas puerta abierta para entrar/salir de edificios.",tips:["No puedes moverte en diagonal.","Cada zona = 1 acción de movimiento.","Kids: Slippery 1 vez por turno con 1 sola acción de movimiento."],tags:["libre"]},
+    {id:"search",label:"🔍 Buscar",noise:0,ap:0,noiseNote:"Sin ruido",apNote:"Sin adrenalina",detail:"Roba 1 carta del mazo de Equipo (azul). Solo dentro de edificios. No puedes buscar más de una vez en la misma zona por turno salvo habilidad especial.",tips:["Solo en edificios.","Algunas habilidades permiten buscar más de una vez.","El mazo puede agotarse — planifica con tu equipo."],tags:["edificio"]},
+    {id:"door",label:"🚪 Abrir Puerta",noise:"1",ap:0,noiseNote:"1 token de ruido en tu zona",apNote:"Sin adrenalina",detail:"Abre una puerta adyacente con arma con símbolo de puerta. ¡ALERTA: al abrir, zombies aparecen en todas las zonas oscuras (Dark Zones) del interior inmediatamente!",tips:["Spawna zombies en cuartos oscuros al instante.","Algunas armas abren puertas en silencio.","Planea bien — puede ser trampa sin equipo para combatir."],tags:["ruido","peligro"]},
+    {id:"melee",label:"⚔️ Cuerpo a Cuerpo",noise:"varía",ap:"+1 por zombie",noiseNote:"Depende del arma (ver card)",apNote:"+1 AP por cada zombie eliminado",detail:"Ataca zombies en tu zona. Tira los dados del arma — cada dado ≥ Precisión = 1 éxito. Cada éxito hace el daño indicado (el daño NO se acumula entre dados).",tips:["Armas silenciosas (Katana) no generan ruido.","Armas ruidosas (Chainsaw) generan 1 token por acción.","El daño no se acumula entre dados del mismo ataque."],tags:["combate","adrenalina","posible-ruido"]},
+    {id:"ranged",label:"🔫 Ataque a Distancia",noise:"1",ap:"+1 por zombie",noiseNote:"Casi siempre 1 token de ruido",apNote:"+1 AP por cada zombie eliminado",detail:"Ataca zombies a distancia (según rango del arma). Prioridad: Fatty primero, luego grupo más numeroso. Dados fallidos pueden impactar compañeros (Friendly Fire).",tips:["Prioridad: Fatty → grupo mayor.","Dados fallidos = posible impacto a compañeros en misma zona.","Necesitas Línea de Visión — puertas cerradas la bloquean."],tags:["combate","adrenalina","ruido","peligro"]},
+    {id:"objective",label:"🎯 Tomar Objetivo",noise:0,ap:5,noiseNote:"Sin ruido",apNote:"+5 AP — token va a tu Dashboard",detail:"Recoge el token de Objetivo en tu zona. Se coloca en tu Dashboard. Cuenta como 1 acción.",tips:["Otorga 5 AP — puede subirte de Danger Level al instante.","Subir de nivel = más zombies en el spawn."],tags:["adrenalina","objetivo"]},
+    {id:"pimp",label:"💰 Pimpweapon Crate",noise:0,ap:0,noiseNote:"Sin ruido",apNote:"Sin adrenalina — solo el arma",detail:"Recoge la caja en tu zona. Obtienes un arma épica aleatoria y reorganizas tu inventario gratis.",tips:["No da AP — la recompensa ES el arma.","Reorganización de inventario gratis e inmediata.","Son las mejores armas del juego."],tags:["equipo"]},
+    {id:"trade",label:"🔄 Reorganizar/Intercambiar",noise:0,ap:0,noiseNote:"Sin ruido",apNote:"Sin adrenalina",detail:"Mueve objetos entre tu Hand y Backpack, o intercambia equipo con un sobreviviente en tu misma zona. Cuesta 1 acción.",tips:["Ambos deben estar en la misma zona para intercambiar.","2 slots de mano y 2 de mochila — planifica bien."],tags:["inventario"]},
+    {id:"nothing",label:"😴 No Hacer Nada",noise:0,ap:0,noiseNote:"Sin ruido",apNote:"Sin adrenalina",detail:"Gasta una acción sin hacer nada. A veces es la decisión táctica correcta.",tips:["Válido estratégicamente.","Tienes 3 acciones por turno por defecto."],tags:["libre"]},
+  ]},
+  zombie:{color:"#c0392b",desc:"Los zombies se activan y atacan o se mueven, luego aparecen nuevos en las Spawn Zones.",actions:[
+    {id:"z-attack",label:"👊 Ataque Zombie",noise:0,ap:0,noiseNote:"—",apNote:"—",detail:"Si hay sobreviviente en su zona, el zombie ataca. Cada herida = 1 Wound. Clásico: eliminado a 3 Wounds. Kid: eliminado a 2 Wounds.",tips:["Walkers: 1 ataque por activación.","Runners: 2 acciones (ataque+movimiento o doble ataque).","Si un sobreviviente es eliminado → TODOS PIERDEN."],tags:["peligro"]},
+    {id:"z-move",label:"🚶 Movimiento Zombie",noise:0,ap:0,noiseNote:"—",apNote:"—",detail:"Sin sobreviviente en su zona, el zombie se mueve hacia la mayor concentración de Ruido visible. Sin ruido visible, hacia el mayor grupo de sobrevivientes.",tips:["Cada miniatura de sobreviviente = 1 token de ruido.","Los zombies no pasan puertas cerradas.","Planifica tu posición para no atraer al horde."],tags:["movimiento"]},
+    {id:"z-spawn",label:"💀 Spawn (Aparición)",noise:0,ap:0,noiseNote:"—",apNote:"—",detail:"Se revelan cartas del mazo de Zombies (amarillo). Por cada Spawn Zone activa aparecen zombies según la carta. Siempre empieza desde la Starting Spawn Zone.",tips:["Mayor AP del equipo = más zombies por spawn.","Sin miniaturas disponibles: se ignoran los extras.","Abrir puerta = spawn inmediato en cuartos oscuros."],tags:["peligro","spawn"]},
+  ]},
+  end:{color:"#8e44ad",desc:"Limpieza de ronda. Se retiran tokens de ruido y el turno pasa al siguiente jugador.",actions:[
+    {id:"noise-clear",label:"🔇 Retirar Tokens de Ruido",noise:-1,ap:0,noiseNote:"Todos los tokens se retiran del tablero",apNote:"Sin adrenalina",detail:"Todos los tokens de ruido colocados durante la ronda se retiran. Las miniaturas de sobrevivientes NO — siempre cuentan como ruido permanente.",tips:["Sobrevivientes siempre son fuente de ruido.","El ruido solo dirige zombies si no ven sobrevivientes directamente."],tags:["ruido"]},
+    {id:"pass-token",label:"🎟️ Pasar Primer Jugador",noise:0,ap:0,noiseNote:"Sin ruido",apNote:"Sin adrenalina",detail:"El token de Primer Jugador pasa al jugador de la izquierda. Comienza una nueva ronda.",tips:["El orden de activación rota cada ronda.","El Primer Jugador activa sus sobrevivientes primero."],tags:["turno"]},
+  ]},
+};
+
+const catMeta={
+  accion:    {color:"#1a5276", label:"Acciones extra"},
+  movimiento:{color:"#2980b9", label:"Movimiento"},
+  combate:   {color:"#8e44ad", label:"Combate"},
+  dado:      {color:"#16a085", label:"Dados / Daño"},
+  sigilo:    {color:"#2c3e50", label:"Sigilo / Ruido"},
+  inventario:{color:"#d35400", label:"Inventario"},
+  equipo:    {color:"#c0392b", label:"Equipo"},
+  especial:  {color:"#7f8c8d", label:"Especial"},
+};
+
+const skills=[
+  {name:"+1 Acción",cat:"accion",desc:"El sobreviviente tiene 1 acción extra que puede usar como quiera."},
+  {name:"+1 Acción Melee gratis",cat:"accion",desc:"1 acción de combate Melee extra y gratuita por turno. Solo para combate cuerpo a cuerpo."},
+  {name:"+1 Acción Ranged gratis",cat:"accion",desc:"1 acción de combate a distancia extra y gratuita por turno. Solo para combate ranged."},
+  {name:"+1 Acción Combat gratis",cat:"accion",desc:"1 acción de combate extra (Melee o Ranged) gratuita por turno."},
+  {name:"+1 Acción Move gratis",cat:"accion",desc:"1 acción de movimiento extra y gratuita por turno. Solo para moverse."},
+  {name:"+1 Acción Search gratis",cat:"accion",desc:"1 acción de búsqueda extra gratuita. El sobreviviente sigue sin poder buscar más de una vez por zona por turno."},
+  {name:"Born leader",cat:"accion",desc:"Durante su turno, puede dar 1 acción gratuita a otro sobreviviente. Esa acción debe usarse en el próximo turno del receptor o se pierde."},
+  {name:"Tactician",cat:"accion",desc:"El turno del sobreviviente puede resolverse en cualquier momento durante la Fase de Jugadores, antes o después de cualquier otro turno."},
+  {name:"Zombie link",cat:"accion",desc:"Juega un turno extra cada vez que se roba una carta de activación extra del mazo zombie. Juega antes que los zombies extra activados."},
+  {name:"2 Zonas por Move Action",cat:"movimiento",desc:"Cuando gasta 1 acción para moverse, puede moverse 1 o 2 zonas en lugar de solo 1."},
+  {name:"+1 Zone per Move",cat:"movimiento",desc:"Puede moverse 1 zona extra cada vez que realiza una acción de movimiento. Se acumula con otros efectos."},
+  {name:"Slippery",cat:"movimiento",desc:"No gasta acciones extra al moverse a través de una zona con zombies. Los Kids tienen esta habilidad de forma innata (1 vez por turno)."},
+  {name:"Blitz",cat:"movimiento",desc:"Cada vez que mata al último zombie de una zona, obtiene 1 acción de movimiento gratuita de forma inmediata."},
+  {name:"Bloodlust: Combat",cat:"movimiento",desc:"Gasta 1 acción: se mueve hasta 2 zonas hacia una zona con zombies, luego obtiene 1 acción de combate gratuita."},
+  {name:"Bloodlust: Melee",cat:"movimiento",desc:"Gasta 1 acción: se mueve hasta 2 zonas hacia una zona con zombies, luego obtiene 1 acción Melee gratuita."},
+  {name:"Bloodlust: Ranged",cat:"movimiento",desc:"Gasta 1 acción: se mueve hasta 2 zonas hacia una zona con zombies, luego obtiene 1 acción Ranged gratuita."},
+  {name:"Lifesaver",cat:"movimiento",desc:"Una vez por turno, gratis: selecciona una zona con zombies a Rango 1. Todos los sobrevivientes aliados en esa zona se mueven a tu zona sin penalización. No funciona cruzando paredes o barricadas."},
+  {name:"Shove",cat:"movimiento",desc:"Una vez por turno, gratis: todos los zombies en tu zona son empujados a una zona adyacente que elijas a Rango 1."},
+  {name:"Ambidextrous",cat:"combate",desc:"Trata todas las armas Melee y Ranged como si tuvieran el símbolo Dual."},
+  {name:"Gunslinger",cat:"combate",desc:"Trata todas las armas Ranged como si tuvieran el símbolo Dual."},
+  {name:"Swordmaster",cat:"combate",desc:"Trata todas las armas Melee como si tuvieran el símbolo Dual."},
+  {name:"Sniper",cat:"combate",desc:"Puede elegir libremente los objetivos de todas sus acciones Ranged (ignora las reglas de prioridad de objetivos)."},
+  {name:"Point-blank",cat:"combate",desc:"Al disparar a Rango 0, elige libremente los objetivos y puede matar cualquier tipo de zombie. Las armas aún necesitan hacer suficiente daño."},
+  {name:"Steady hand",cat:"combate",desc:"Las miniaturas aliadas son ignoradas cuando usa un ataque Ranged o conduce un coche. No aplica a armas que matan toda la zona (Molotov)."},
+  {name:"Trick shot",cat:"combate",desc:"Con Dual Ranged weapons, puede apuntar a zonas distintas con cada arma en la misma acción."},
+  {name:"Reaper: Combat",cat:"combate",desc:"Al asignar impactos en combate, uno de ellos puede matar un zombie idéntico adicional en la misma zona. Solo 1 extra por acción."},
+  {name:"Reaper: Melee",cat:"combate",desc:"Al asignar impactos en Melee, uno puede matar un zombie idéntico adicional en la misma zona."},
+  {name:"Reaper: Ranged",cat:"combate",desc:"Al asignar impactos en Ranged, uno puede matar un zombie idéntico adicional en la misma zona."},
+  {name:"Super strength",cat:"combate",desc:"El valor de Daño de las armas Melee que usa se considera siempre 3."},
+  {name:"Combat Reflexes",cat:"combate",desc:"Cada vez que zombies hacen spawn a Rango 0-1, puede realizar inmediatamente 1 acción de combate gratuita contra ellos. 1 vez por carta de zombie revelada."},
+  {name:"Taunt",cat:"combate",desc:"Una vez por turno, gratis: todos los zombies en una zona visible ganan activación extra e intentan alcanzar a este sobreviviente, ignorando a los demás."},
+  {name:"Low profile",cat:"combate",desc:"No puede ser objetivo de ataques Ranged aliados ni de atropellos de coches. Armas que matan todo en zona (Molotov) sí le afectan."},
+  {name:"+1 dado: Combat",cat:"dado",desc:"Las armas tiran 1 dado extra en combate (Melee o Ranged). Dual weapons ganan 1 dado cada una."},
+  {name:"+1 dado: Melee",cat:"dado",desc:"Las armas Melee tiran 1 dado extra. Dual Melee ganan 1 dado cada una."},
+  {name:"+1 dado: Ranged",cat:"dado",desc:"Las armas Ranged tiran 1 dado extra. Dual Ranged ganan 1 dado cada una."},
+  {name:"+1 al dado: Combat",cat:"dado",desc:"Suma 1 al resultado de cada dado en Combat (Melee o Ranged). El máximo es siempre 6."},
+  {name:"+1 al dado: Melee",cat:"dado",desc:"Suma 1 al resultado de cada dado en Melee. El máximo es siempre 6."},
+  {name:"+1 al dado: Ranged",cat:"dado",desc:"Suma 1 al resultado de cada dado en Ranged. El máximo es siempre 6."},
+  {name:"+1 Daño: [Tipo]",cat:"dado",desc:"Obtiene +1 de daño con el tipo de acción especificado en la habilidad (Melee o Ranged)."},
+  {name:"+1 Daño con [Equipo]",cat:"dado",desc:"Obtiene +1 de daño con el equipo específico indicado en la habilidad."},
+  {name:"+1 max Range",cat:"dado",desc:"El rango máximo de todas las armas Ranged aumenta en 1."},
+  {name:"1 re-roll por turno",cat:"dado",desc:"Una vez por turno, puede re-tirar todos los dados de una acción. El nuevo resultado reemplaza al anterior. Se acumula con efectos de equipo."},
+  {name:"Lucky",cat:"dado",desc:"Puede re-tirar una vez todos los dados de cada acción que tome. Se acumula con otras habilidades de re-roll y equipo."},
+  {name:"Frenzy: Combat",cat:"dado",desc:"Todas las armas ganan +1 dado por cada Wound que tenga el sobreviviente. Dual weapons ganan 1 dado cada una."},
+  {name:"Frenzy: Melee",cat:"dado",desc:"Las armas Melee ganan +1 dado por cada Wound."},
+  {name:"Frenzy: Ranged",cat:"dado",desc:"Las armas Ranged ganan +1 dado por cada Wound."},
+  {name:"Roll 6: +1 dado Combat",cat:"dado",desc:"Por cada '6' en un ataque (Melee o Ranged), tira 1 dado adicional. Continúa mientras siga sacando 6."},
+  {name:"Roll 6: +1 dado Melee",cat:"dado",desc:"Por cada '6' en un ataque Melee, tira 1 dado adicional. Continúa con cada 6 adicional."},
+  {name:"Roll 6: +1 dado Ranged",cat:"dado",desc:"Por cada '6' en un ataque Ranged, tira 1 dado adicional. Continúa con cada 6 adicional."},
+  {name:"Barbarian",cat:"dado",desc:"Al resolver una acción Melee, puede sustituir el número de dados del arma por el número de zombies en su zona."},
+  {name:"Ninja",cat:"sigilo",desc:"No genera ningún ruido. Su miniatura no cuenta como token de ruido, y usar equipo/armas tampoco genera tokens. Puede elegir no usar esta habilidad voluntariamente."},
+  {name:"Rotten",cat:"sigilo",desc:"Si al final de su turno no realizó combate ni generó ruido, coloca un token Rotten. Con él, todos los zombies le ignoran completamente. Lo pierde si ataca o hace ruido."},
+  {name:"Loud",cat:"sigilo",desc:"Una vez por turno, puede generar ruido masivo. Hasta su próximo turno, su zona se considera la de mayor concentración de ruido en todo el mapa."},
+  {name:"Hoard",cat:"inventario",desc:"Puede llevar 1 carta de equipo extra en reserva."},
+  {name:"Death grasp",cat:"inventario",desc:"No descarta una carta de equipo al recibir una carta de Wounded. Se ignora si no hay espacio en el inventario."},
+  {name:"Is that all you've got?",cat:"inventario",desc:"Al recibir Wounds, puede descartar 1 carta de equipo por cada Wound para negarlo."},
+  {name:"Medic",cat:"inventario",desc:"Una vez por turno, gratis: retira 1 carta de Wounded de un sobreviviente en su zona. También puede curarse a sí mismo."},
+  {name:"Regeneration",cat:"inventario",desc:"Al final de cada ronda, descarta todos sus Wounds recibidos. No funciona si fue eliminado."},
+  {name:"Tough",cat:"inventario",desc:"Ignora el primer ataque que recibe de un zombie en cada Fase de Zombies."},
+  {name:"Dreadnought: [tipo zombie]",cat:"inventario",desc:"Ignora todas las heridas provenientes de zombies estándar del tipo especificado."},
+  {name:"Webbing",cat:"inventario",desc:"Todo el equipo en su inventario se considera equipado en los slots de mano (Hand slots)."},
+  {name:"Break-in",cat:"equipo",desc:"No necesita equipo para abrir puertas y no genera ruido al hacerlo. Además tiene 1 acción gratuita extra de apertura de puertas por turno."},
+  {name:"Destiny",cat:"equipo",desc:"Una vez por turno, al revelar una carta de equipo que acaba de robar, puede descartarla y robar otra."},
+  {name:"Hold your nose",cat:"equipo",desc:"Una vez por turno, si eliminó un zombie ese turno (incluso fuera de edificio), obtiene 1 acción de búsqueda gratuita. Sigue sin poder buscar más de una vez por zona."},
+  {name:"Lock it down",cat:"equipo",desc:"Con 1 acción, puede cerrar una puerta abierta en su zona. Abrirla después no activa un nuevo Spawn de zombies."},
+  {name:"Matching Set!",cat:"equipo",desc:"Cuando busca y encuentra un arma con símbolo Dual, puede tomar inmediatamente una segunda carta idéntica del mazo de equipo. Luego mezcla el mazo."},
+  {name:"Starts with [Equipo]",cat:"equipo",desc:"El sobreviviente comienza el juego con el equipo indicado; su carta se le asigna automáticamente antes de empezar."},
+  {name:"Collector: [tipo zombie]",cat:"especial",desc:"Duplica el AP ganado cada vez que mata un zombie del tipo especificado."},
+  {name:"Distributor",cat:"especial",desc:"Altera el Spawn: roba tantas cartas de zombie como Spawn Zones activas hay y asígnalas libremente a cada zona."},
+  {name:"Can start at [Danger Level]",cat:"especial",desc:"Puede comenzar el juego al nivel de peligro indicado. Todos los jugadores deben estar de acuerdo."},
+];
+
+// ===== STATE =====
+let curPhase=null, curAction=null, curCat='all';
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+  if(tab==='skills') buildSkillFilters();
+}
+
+function selectPhase(id){
+  if(curPhase===id) id=null;
+  curPhase=id; curAction=null;
+  ['player','zombie','end'].forEach(p=>{
+    const b=document.getElementById('pbtn-'+p);
+    b.classList.remove('active'); b.style.background='#1a1a1a'; b.style.borderColor='#333'; b.style.color='#ccc';
+  });
+  const panel=document.getElementById('phase-panel');
+  const empty=document.getElementById('empty-state');
+  document.getElementById('action-detail').classList.remove('visible');
+  if(!id){panel.classList.remove('visible');empty.style.display='block';return;}
+  const ph=phases[id];
+  const btn=document.getElementById('pbtn-'+id);
+  btn.classList.add('active'); btn.style.background=ph.color; btn.style.borderColor=ph.color; btn.style.color='#000';
+  panel.style.border='1px solid '+ph.color+'44';
+  const desc=document.getElementById('phase-desc');
+  desc.style.color=ph.color; desc.style.borderBottomColor=ph.color+'44'; desc.textContent=ph.desc;
+  const row=document.getElementById('actions-row');
+  row.innerHTML='';
+  ph.actions.forEach(a=>{
+    const b=document.createElement('button'); b.className='action-btn'; b.id='abtn-'+a.id;
+    b.textContent=a.label; b.onclick=()=>selectAction(a.id); row.appendChild(b);
+  });
+  panel.classList.add('visible'); empty.style.display='none';
+}
+
+function selectAction(id){
+  if(curAction===id) id=null;
+  curAction=id;
+  const ph=phases[curPhase];
+  ph.actions.forEach(a=>{
+    const b=document.getElementById('abtn-'+a.id);
+    if(b){b.classList.remove('active');b.style.background='#151515';b.style.color='#999';b.style.borderColor='#2a2a2a';}
+  });
+  const detail=document.getElementById('action-detail');
+  if(!id){detail.classList.remove('visible');return;}
+  const action=ph.actions.find(a=>a.id===id);
+  const btn=document.getElementById('abtn-'+id);
+  btn.classList.add('active'); btn.style.background='#1e1e1e'; btn.style.color=ph.color; btn.style.borderColor=ph.color;
+  const noiseEl=document.getElementById('stat-noise');
+  if(action.noise===-1){noiseEl.textContent='🔇 LIMPIA';noiseEl.style.color='#3498db';}
+  else if(action.noise===0){noiseEl.textContent='✅ NULO';noiseEl.style.color='#27ae60';}
+  else if(action.noise==='varía'){noiseEl.textContent='⚠️ VARÍA';noiseEl.style.color='#e67e22';}
+  else{noiseEl.textContent='+'+action.noise+' 🔊';noiseEl.style.color='#e74c3c';}
+  document.getElementById('stat-noise-note').textContent=action.noiseNote;
+  const apEl=document.getElementById('stat-ap');
+  if(action.ap===0){apEl.textContent='— NADA';apEl.style.color='#555';}
+  else if(typeof action.ap==='number'){apEl.textContent='+'+action.ap+' ⚡';apEl.style.color='#f39c12';}
+  else{apEl.textContent=action.ap+' ⚡';apEl.style.color='#f39c12';}
+  document.getElementById('stat-ap-note').textContent=action.apNote;
+  document.getElementById('detail-body').textContent=action.detail;
+  const tl=document.getElementById('tips-list'); tl.innerHTML='';
+  action.tips.forEach(t=>{tl.innerHTML+='<div class="tip"><span class="tip-arrow">▸</span><span class="tip-text">'+t+'</span></div>';});
+  const tagsEl=document.getElementById('tags-list'); tagsEl.innerHTML='';
+  action.tags.forEach(tag=>{const c=tagColors[tag]||'#666';tagsEl.innerHTML+='<span class="tag" style="background:'+c+'22;border:1px solid '+c+'55;color:'+c+'">'+tag.toUpperCase()+'</span>';});
+  detail.classList.add('visible');
+}
+
+// SKILLS
+let skillsBuilt=false;
+function buildSkillFilters(){
+  if(skillsBuilt) return;
+  skillsBuilt=true;
+  const filtersEl=document.getElementById('cat-filters');
+  const allBtn=document.createElement('button');
+  allBtn.className='cat-btn'; allBtn.id='cat-all'; allBtn.textContent='Todas';
+  allBtn.style.background='#8b0000'; allBtn.style.borderColor='#8b0000'; allBtn.style.color='#fff';
+  allBtn.onclick=()=>setCat('all');
+  filtersEl.appendChild(allBtn);
+  Object.entries(catMeta).forEach(([key,meta])=>{
+    const b=document.createElement('button'); b.className='cat-btn'; b.id='cat-'+key;
+    b.textContent=meta.label; b.onclick=()=>setCat(key); filtersEl.appendChild(b);
+  });
+  filterSkills();
+}
+
+function setCat(cat){
+  curCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>{b.style.background='#111';b.style.borderColor='#2a2a2a';b.style.color='#666';});
+  const active=document.getElementById('cat-'+cat);
+  const color=cat==='all'?'#8b0000':catMeta[cat].color;
+  active.style.background=color; active.style.borderColor=color; active.style.color='#fff';
+  filterSkills();
+}
+
+function filterSkills(){
+  const q=(document.getElementById('skill-search').value||'').toLowerCase();
+  const list=document.getElementById('skills-list');
+  const noRes=document.getElementById('no-results');
+  const countEl=document.getElementById('skills-count');
+  list.innerHTML='';
+  const filtered=skills.filter(s=>{
+    const matchCat=curCat==='all'||s.cat===curCat;
+    const matchQ=!q||s.name.toLowerCase().includes(q)||s.desc.toLowerCase().includes(q);
+    return matchCat&&matchQ;
+  });
+  countEl.textContent=filtered.length+' habilidad'+(filtered.length!==1?'es':'');
+  if(!filtered.length){noRes.style.display='block';return;}
+  noRes.style.display='none';
+  filtered.forEach(s=>{
+    const meta=catMeta[s.cat];
+    const card=document.createElement('div'); card.className='skill-card';
+    card.innerHTML='<div class="skill-header" onclick="this.parentElement.classList.toggle(\'open\')"><span class="skill-name">'+s.name+'</span><span class="skill-cat-badge" style="background:'+meta.color+'">'+meta.label+'</span><span class="skill-expand">▼</span></div><div class="skill-body">'+s.desc+'</div>';
+    list.appendChild(card);
+  });
+}
+
+// ===== EXPANSIONES =====
+const expansiones={
+  washington:{
+    name:"Washington Z.C.",color:"#4a90cc",icon:"🏛️",
+    desc:"Expansión de campaña con 10 misiones en la Casa Blanca. Añade modo noche/día, reglas avanzadas de equipo, modo campaña con progreso entre misiones y nuevas mecánicas de mapa.",
+    requires:"Requiere Zombicide 2nd Edition (juego base)",
+    sections:[
+      {title:"⏰ El Reloj y Reglas de Noche",items:[
+        {label:"El Reloj (Clock token)",text:"Reemplaza el token de Primer Jugador. Avanza 1 hora cada Fase Final. La misión indica la hora de inicio.",type:"rule"},
+        {label:"Día (7am–6pm)",text:"Reglas normales de Zombicide. Sin restricciones de visión ni precisión.",type:"good"},
+        {label:"Noche (7pm–6am) — Night Rules",text:"• Línea de Visión de Zombies: Rango 0 (solo atacan en su zona).\n• Línea de Visión de Sobrevivientes: Rango 0–1.\n• Precisión de armas Ranged: necesitas sacar 6 para impactar.\n• Efectos que modifican Accuracy siguen aplicando.\n• Molotovs y ataques automáticos funcionan normal.",type:"danger"},
+      ]},
+      {title:"🔦 Fuentes de Luz (Lightsources)",items:[
+        {label:"Encender Flashlight",text:"Se enciende: (1) gastando 1 acción, (2) realizando Search con Flashlight, o (3) gratis al declarar un ataque Ranged a Rango 0–1. Coloca un Light Beam token abarcando tu zona y una adyacente.",type:"rule"},
+        {label:"Efecto del Light Beam",text:"Zonas iluminadas: visión y precisión normales (ignoran noche). ⚠️ ANTES de la Fase de Zombies: cualquier zombie con Línea de Visión al Light Beam realiza 1 activación extra gratuita.",type:"warning"},
+        {label:"Apagar Flashlight",text:"Gasta 1 acción, o al intercambiar/descartar el Flashlight. Se retira el Light Beam token.",type:"rule"},
+        {label:"Night Vision Goggles",text:"El sobreviviente que los lleva ignora completamente las reglas de noche.",type:"good"},
+      ]},
+      {title:"🎲 Going All-Out",items:[
+        {label:"Declarar All-Out",text:"Antes de cualquier combate, puedes ir All-Out con un arma que tenga valor All-Out. Añades esa cantidad de dados especiales al pool y tiras todos juntos.",type:"rule"},
+        {label:"Dados All-Out",text:"Funcionan como normales pero el 1 es reemplazado por Break. Si sale Break en cualquier dado All-Out → el arma se rompe y se descarta después del ataque.",type:"danger"},
+        {label:"Dual All-Out",text:"Añades dados All-Out de AMBAS armas. Cada Break rompe 1 arma. 2+ Breaks = pierdes ambas.",type:"warning"},
+        {label:"Sin re-tirar",text:"Los dados All-Out NO pueden re-tirarse. Lucky, Plenty of Bullets/Shells no aplican a ellos. Los dados normales del mismo ataque SÍ pueden re-tirarse.",type:"warning"},
+      ]},
+      {title:"🧰 Keep — Conservar Equipo",items:[
+        {label:"¿Cómo funciona?",text:"Las cartas avanzadas tienen valor Keep. Al terminar la misión, por cada carta con Keep tiras esa cantidad de dados All-Out.",type:"rule"},
+        {label:"Resultado",text:"Sin Break → conservas el equipo para la siguiente misión. 1+ Break → se descarta (se averió). El Keep roll no puede re-tirarse.",type:"rule"},
+        {label:"Sin Keep",text:"Las cartas sin valor Keep siempre se descartan al terminar la misión.",type:"danger"},
+      ]},
+      {title:"💀 Reglas KO / R.I.P. (Campaña)",items:[
+        {label:"KO en vez de muerte",text:"Al llegar a 0 vida → KO (no muerto). Acuesta la miniatura en su zona. Se descartan TODAS sus cartas de equipo (sin Keep roll).",type:"rule"},
+        {label:"Rescate",text:"Un sobreviviente KO cuenta como Objetivo. Otro puede recogerlo con Tomar Objetivo antes del fin de la siguiente ronda.",type:"good"},
+        {label:"Si nadie lo rescata",text:"Muere definitivamente. No puede usarse hasta el fin de la campaña. Su jugador elige un nuevo sobreviviente con nueva Campaign Sheet, perdiendo todo progreso (excepto Achievements).",type:"danger"},
+      ]},
+      {title:"🗺️ Mecánicas exclusivas de Washington",items:[
+        {label:"Sacos de Arena (Sandbags)",text:"No bloquean Línea de Visión. Sobrevivientes los cruzan sin penalización. Zombies NO pueden cruzarlos en su Move Step normal — deben rodearlos. EXCEPCIÓN: en activaciones extra, los zombies los ignoran.",type:"rule"},
+        {label:"Tanque (Tank)",text:"Obstáculo que abarca 2 zonas. Bloquea Línea de Visión a actores que no estén encima. Subirse cuesta 1 acción extra. Zombies no pueden cruzarlo en Move Step normal.",type:"rule"},
+        {label:"Humvee",text:"Token que permite buscar en el mazo Secret Service. No se puede conducir.",type:"rule"},
+        {label:"Zonas Secret Service",text:"Al buscar en ellas robas del mazo Secret Service: equipo especial de alta calidad con valores All-Out y Keep.",type:"good"},
+      ]},
+      {title:"📋 Modo Campaña",items:[
+        {label:"CXP (Campaign Experience)",text:"1 CXP al llegar a Danger Level Naranja por primera vez en la misión. 1 CXP más al llegar a Rojo. Al acumular suficiente: eliges Bonus Action o Campaign Skill.",type:"rule"},
+        {label:"Campaign Skills",text:"Skills adicionales que tienes desde el inicio de cada misión. Solo se adquieren una vez.",type:"good"},
+        {label:"Bonus Actions",text:"Acciones gratuitas adicionales. Se recuperan al inicio de cada misión. Puedes tener varias acumuladas.",type:"good"},
+        {label:"Objective Cards",text:"Reemplazan los tokens de Objetivo. Se leen en voz alta al recogerlas. Pueden incluir decisiones, Keywords y efectos narrativos. NO otorgan AP salvo que la carta lo indique.",type:"warning"},
+      ]},
+    ]
+  },
+  pariz:{
+    name:"PariZ",color:"#e8c84a",icon:"🗼",
+    desc:"Expansión de campaña con 10 misiones en París: calles y catacumbas. Nuevas mecánicas de mapa (árboles, trampillas, guillotina), zombie especial Marie Antoinette, y el mismo sistema de dados All-Out que Washington Z.C.",
+    requires:"Requiere Zombicide 2nd Edition (juego base)",
+    note:"PariZ usa el mismo sistema de dados All-Out y Keep que Washington Z.C. Si ya conoces esa expansión, esas reglas aplican igual aquí.",
+    sections:[
+      {title:"🌙 Mecánica de Día y Noche",items:[
+        {label:"En las calles de París",text:"El tiempo avanza con el reloj de campaña. Al caer la noche se aplican las Night Rules: precisión reducida a 6+, Línea de Visión de sobrevivientes limitada a Rango 0–1.",type:"rule"},
+        {label:"En las Catacumbas",text:"Tienen electricidad propia. Mientras funcione → reglas de día. Si la electricidad falla (según la misión) → se aplican las Night Rules dentro de las catacumbas.",type:"danger"},
+        {label:"Flashlights",text:"Mismas reglas que Washington Z.C.: iluminan zonas, cancelan penalizaciones de noche, pero atraen zombies con activación extra antes de la Fase de Zombies.",type:"warning"},
+      ]},
+      {title:"🌳 Árboles y Torre Eiffel",items:[
+        {label:"Árboles — Peligro oculto",text:"Los zombies pueden 'caer' de los árboles inesperadamente en ciertas situaciones de la misión, funcionando como puntos de spawn adicional.",type:"danger"},
+        {label:"Torre Eiffel",text:"Zona elevada que permite líneas de visión extendidas para disparar desde arriba. Canaliza el movimiento de zombies hacia sus accesos.",type:"rule"},
+      ]},
+      {title:"🕳️ Trampillas (Trapdoors)",items:[
+        {label:"Conexión calles/catacumbas",text:"Las trampillas conectan la superficie con las catacumbas. Los sobrevivientes pueden usarlas para moverse entre ambas zonas del mapa.",type:"rule"},
+        {label:"Mecánica de uso",text:"Usar una trampilla es una acción de movimiento. Al entrar a las catacumbas por primera vez, se revela esa sección del mapa subterráneo.",type:"rule"},
+      ]},
+      {title:"⚔️ La Guillotina y Marie Antoinette",items:[
+        {label:"Marie Antoinette",text:"Walker especial y el ÚNICO zombie de PariZ con reglas propias (los demás nuevos zombies son solo cosméticos). Es un walker sin cabeza que sostiene su cabeza en la mano.",type:"warning"},
+        {label:"Token de Guillotina",text:"Mientras Marie Antoinette esté viva, su token de Guillotina actúa como Zona de Spawn adicional. Prioridad máxima: elimínala lo antes posible.",type:"danger"},
+      ]},
+      {title:"🎲 Dados All-Out y Keep",items:[
+        {label:"Idéntico a Washington Z.C.",text:"PariZ incluye 6 dados All-Out. Si ya tienes Washington Z.C., son los mismos dados y se usan exactamente igual.",type:"rule"},
+        {label:"All-Out",text:"Añades dados All-Out al pool antes de un ataque. Si sale Break → el arma se rompe y se descarta tras el ataque.",type:"danger"},
+        {label:"Keep entre misiones",text:"Las cartas de equipo de PariZ también tienen valores Keep. Al terminar la misión, tiras dados All-Out para ver qué conservas.",type:"rule"},
+      ]},
+      {title:"📋 Modo Campaña de PariZ",items:[
+        {label:"10 misiones con sobres sellados",text:"La historia se desarrolla en 10 misiones conectadas. Hay sobres sellados que se abren en momentos específicos para revelar giros narrativos — ¡no los leas antes!",type:"rule"},
+        {label:"Objective Cards narrativas",text:"Reemplazan los tokens de Objetivo. Se leen en voz alta al recogerlas. Incluyen decisiones y Keywords vinculadas. No otorgan AP salvo indicación.",type:"rule"},
+        {label:"Compatibilidad total",text:"Sobrevivientes, equipo y tiles de PariZ son compatibles con el juego base y con Washington Z.C. Puedes mezclarlos en cualquier misión de Zombicide 2nd Edition.",type:"good"},
+      ]},
+    ]
+  }
+};
+
+let curExp=null;
+function selectExp(id){
+  if(curExp===id) id=null;
+  curExp=id;
+  ['washington','pariz'].forEach(e=>{
+    const b=document.getElementById('pbtn-'+e);
+    if(!b) return;
+    b.classList.remove('active');
+    b.style.background='#1a1a1a';b.style.borderColor='#333';b.style.color='#ccc';
+  });
+  const panel=document.getElementById('exp-panel');
+  const empty=document.getElementById('exp-empty');
+  if(!id){panel.style.display='none';empty.style.display='block';return;}
+  const exp=expansiones[id];
+  const btn=document.getElementById('pbtn-'+id);
+  btn.classList.add('active');btn.style.background=exp.color;btn.style.borderColor=exp.color;btn.style.color='#000';
+  const bg={rule:'#0d1820',good:'#0a1408',danger:'#1a0808',warning:'#1a1208'};
+  const tc={rule:'#6699bb',good:'#55aa66',danger:'#cc5544',warning:'#e8c84a'};
+  const bc={rule:'#1a3050',good:'#1a4020',danger:'#5a1a10',warning:'#5a3808'};
+  let html=`<div style="background:#0f1418;border:1px solid ${exp.color}33;border-radius:4px;padding:12px;margin-bottom:12px">
+    <div style="font-size:17px;font-weight:bold;color:${exp.color};margin-bottom:4px">${exp.icon} ${exp.name}</div>
+    <div style="font-size:12px;color:#778;line-height:1.6;margin-bottom:5px">${exp.desc}</div>
+    <div style="font-size:10px;color:#556;font-family:monospace">⚠️ ${exp.requires}</div>
+    ${exp.note?`<div style="margin-top:8px;font-size:11px;color:#4a7090;border-top:1px solid #1a2530;padding-top:7px">💡 ${exp.note}</div>`:''}
+  </div>`;
+  exp.sections.forEach(sec=>{
+    html+=`<div style="margin-bottom:10px"><div style="font-size:9px;color:#446677;font-family:monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;padding-bottom:3px;border-bottom:1px solid #111820">${sec.title}</div>`;
+    sec.items.forEach(item=>{
+      html+=`<div style="background:${bg[item.type]||'#111'};border:1px solid ${bc[item.type]||'#222'};border-radius:3px;padding:8px 11px;margin-bottom:5px">
+        <div style="font-size:11px;font-weight:bold;color:${tc[item.type]||'#888'};margin-bottom:3px">${item.label}</div>
+        <div style="font-size:11px;color:#889;line-height:1.7;white-space:pre-line">${item.text}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  panel.innerHTML=html;panel.style.display='block';empty.style.display='none';
+}
+</script>
+</body>
+</html>

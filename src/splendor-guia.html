@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Splendor — Guía Rápida</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#0e0a06;color:#e8e0d0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    min-height:100vh;
+    background-image:radial-gradient(ellipse at 30% 0%,#1a1208 0%,transparent 60%),
+                     radial-gradient(ellipse at 80% 90%,#12080a 0%,transparent 50%);
+  }
+  header{
+    border-bottom:2px solid #3a2808;
+    padding:14px 16px 12px;
+    background:linear-gradient(180deg,#1a0e04 0%,#0e0a06 100%);
+    display:flex;align-items:center;gap:12px;
+  }
+  .back-btn{
+    color:#aa8833;font-size:12px;text-decoration:none;
+    border:1px solid #3a2808;padding:4px 10px;border-radius:4px;
+    font-family:monospace;letter-spacing:1px;transition:all 0.15s;flex-shrink:0;
+  }
+  .back-btn:hover{background:#1a1008;color:#e8c84a}
+  .sub{font-size:9px;letter-spacing:4px;color:#6a4010;text-transform:uppercase;font-family:monospace}
+  .main-title{font-size:20px;font-weight:bold;color:#e8c84a;letter-spacing:1px}
+  .tagline{font-size:10px;color:#554;letter-spacing:1px;margin-top:2px}
+
+  .nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #1a1008;background:#0a0806;overflow-x:auto}
+  .nav-btn{
+    background:transparent;border:1px solid #2a1a08;color:#665533;
+    padding:6px 12px;cursor:pointer;font-size:10px;border-radius:2px;white-space:nowrap;
+    text-transform:uppercase;letter-spacing:1px;font-family:monospace;transition:all 0.15s;
+  }
+  .nav-btn.active{background:#3a2010;border-color:#aa6622;color:#e8c84a}
+
+  .container{padding:14px 16px;max-width:720px;margin:0 auto}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  .section-title{font-size:9px;letter-spacing:3px;color:#6a4010;text-transform:uppercase;
+    margin-bottom:8px;margin-top:16px;border-bottom:1px solid #1a1008;padding-bottom:4px}
+  .section-title:first-child{margin-top:0}
+
+  /* CARDS */
+  .card{background:#130e08;border:1px solid #2a1a08;border-radius:4px;overflow:hidden;margin-bottom:8px}
+  .card-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;transition:background 0.15s}
+  .card-header:hover{background:#1a1208}
+  .card-title{font-size:13px;font-weight:bold;flex:1}
+  .card-chevron{color:#443320;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .card.open .card-chevron{transform:rotate(180deg)}
+  .card-body{display:none;border-top:1px solid #1a1008;padding:12px 14px}
+  .card.open .card-body{display:block}
+
+  .desc{font-size:12px;color:#998877;line-height:1.7;margin-bottom:8px}
+  .steps{margin-bottom:8px}
+  .step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+  .step-num{
+    background:#2a1808;border:1px solid #5a3010;color:#e8c84a;
+    font-size:10px;font-weight:bold;width:22px;height:22px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:monospace;
+  }
+  .step-text{font-size:12px;color:#998877;line-height:1.6}
+  .tip{background:#0e1208;border:1px solid #1a3010;border-radius:3px;padding:8px 12px;font-size:11px;color:#66aa55;margin:6px 0;line-height:1.6}
+  .warn{background:#140c08;border:1px solid #5a2010;border-radius:3px;padding:8px 12px;font-size:11px;color:#cc6633;margin:6px 0;line-height:1.6}
+  .info{background:#0a0e14;border:1px solid #1a2a40;border-radius:3px;padding:8px 12px;font-size:11px;color:#6688bb;margin:6px 0;line-height:1.6}
+
+  /* GEM PILLS */
+  .gems-row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+  .gem{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:600}
+
+  /* ACTION CARDS */
+  .actions-grid{display:flex;flex-direction:column;gap:8px}
+  .action-card{
+    background:#130e08;border:1px solid #2a1a08;border-radius:4px;
+    overflow:hidden;cursor:pointer;transition:border-color 0.15s;
+  }
+  .action-card:hover{border-color:#5a3010}
+  .action-card.open{border-color:#aa6622}
+  .action-header{display:flex;align-items:center;gap:10px;padding:11px 14px}
+  .action-icon{font-size:20px;flex-shrink:0}
+  .action-name{font-size:14px;font-weight:bold;color:#e8c84a;flex:1}
+  .action-sub{font-size:10px;color:#665533;font-family:monospace;letter-spacing:1px}
+  .action-chev{color:#443320;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .action-card.open .action-chev{transform:rotate(180deg)}
+  .action-body{display:none;border-top:1px solid #1a1008;padding:12px 14px}
+  .action-card.open .action-body{display:block}
+
+  /* SETUP TABLE */
+  table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+  th{background:#1a1208;color:#aa8833;padding:7px 10px;text-align:left;border:1px solid #2a1a08;font-family:monospace;letter-spacing:1px;font-size:9px;text-transform:uppercase}
+  td{padding:7px 10px;border:1px solid #1a1008;color:#998877;vertical-align:top;line-height:1.5}
+  tr:nth-child(even) td{background:#110c07}
+
+  /* STRATEGY */
+  .strategy-card{background:#130e08;border:1px solid #2a1a08;border-radius:4px;padding:12px 14px;margin-bottom:8px}
+  .strategy-title{font-size:12px;font-weight:bold;color:#cc9944;margin-bottom:5px}
+  .strategy-text{font-size:12px;color:#887766;line-height:1.6}
+
+  footer{margin-top:14px;padding-top:10px;border-top:1px solid #1a1008;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+  footer span{font-size:9px;color:#2a1a08;font-family:monospace}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">← Biblioteca</a>
+  <div>
+    <div class="sub">Guía de referencia</div>
+    <div class="main-title">💎 SPLENDOR</div>
+    <div class="tagline">2–4 jugadores · 30–60 min · Gestión de recursos</div>
+  </div>
+</header>
+
+<div class="nav">
+  <button class="nav-btn active" id="navbtn-resumen" onclick="switchTab('resumen',this)">📋 Resumen</button>
+  <button class="nav-btn" id="navbtn-acciones" onclick="switchTab('acciones',this)">⚡ Acciones</button>
+  <button class="nav-btn" id="navbtn-cartas" onclick="switchTab('cartas',this)">🃏 Cartas</button>
+  <button class="nav-btn" id="navbtn-setup" onclick="switchTab('setup',this)">🎲 Setup</button>
+  <button class="nav-btn" id="navbtn-estrategia" onclick="switchTab('estrategia',this)">🧠 Estrategia</button>
+</div>
+
+<div class="container">
+
+<!-- ===== RESUMEN ===== -->
+<div id="tab-resumen" class="tab-panel active">
+
+  <div class="section-title">¿De qué va el juego?</div>
+  <div class="desc">
+    Eres un mercader de gemas del Renacimiento. Compras minas, medios de transporte y joyerías para ganar Puntos de Prestigio. El primero en llegar a <strong style="color:#e8c84a">15 puntos</strong> desencadena la ronda final — gana quien tenga más puntos al terminarla.
+  </div>
+
+  <div class="section-title">Las gemas</div>
+  <div class="gems-row">
+    <div class="gem" style="background:#1a1a2a;border:1px solid #3a3a6a;color:#aaaaee">💎 Zafiro (azul)</div>
+    <div class="gem" style="background:#0a1a0a;border:1px solid #1a4a1a;color:#66cc66">💚 Esmeralda (verde)</div>
+    <div class="gem" style="background:#1a0a0a;border:1px solid #4a1a1a;color:#ee6666">❤️ Rubí (rojo)</div>
+    <div class="gem" style="background:#1a1a1a;border:1px solid #4a4a4a;color:#cccccc">🤍 Diamante (blanco)</div>
+    <div class="gem" style="background:#0a0a0a;border:1px solid #3a3a3a;color:#888888">🖤 Ónice (negro)</div>
+    <div class="gem" style="background:#1a1400;border:1px solid #4a3a00;color:#e8c84a">🥇 Oro (comodín)</div>
+  </div>
+
+  <div class="section-title">Estructura de un turno</div>
+  <div class="desc">Cada jugador realiza <strong style="color:#e8c84a">exactamente 1 acción</strong> por turno, luego verifica si recibe la visita de un Noble. Son 4 acciones posibles:</div>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#e8c84a">Las 4 acciones posibles</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">A</div><div class="step-text"><strong style="color:#cc9944">Tomar 3 gemas de colores distintos</strong> — Toma 1 ficha de cada uno de 3 colores diferentes (no oro).</div></div>
+        <div class="step"><div class="step-num">B</div><div class="step-text"><strong style="color:#cc9944">Tomar 2 gemas del mismo color</strong> — Solo si hay ≥4 fichas de ese color disponibles. Toma 2 del mismo color (no oro).</div></div>
+        <div class="step"><div class="step-num">C</div><div class="step-text"><strong style="color:#cc9944">Reservar 1 carta y tomar 1 ficha de oro</strong> — Guarda una carta en tu mano (máx. 3 cartas reservadas). Tomas 1 oro si hay disponibles.</div></div>
+        <div class="step"><div class="step-num">D</div><div class="step-text"><strong style="color:#cc9944">Comprar 1 carta de desarrollo</strong> — De las visibles en la mesa o de tus cartas reservadas. Pagas su costo con fichas y/o bonos de tus cartas.</div></div>
+      </div>
+      <div class="warn">⚠️ Nunca puedes terminar tu turno con más de 10 fichas. Si tienes más, debes devolver hasta quedarte con 10.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Nobles — visitas automáticas</div>
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#cc9944">👑 ¿Cómo funcionan los Nobles?</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="desc">Al <strong>final de tu turno</strong> (después de tu acción), verifica si cumples el requisito de algún Noble. Los Nobles requieren que tengas cierta cantidad de cartas de desarrollo de un color específico — <strong>no fichas</strong>, solo las cartas compradas cuentan.</div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Si cumples los requisitos de 1 o más Nobles → te visita automáticamente (no es una acción, es obligatorio).</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Si calificas para más de 1 Noble en el mismo turno → tú eliges cuál tomar. Solo puedes recibir 1 por turno.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Cada Noble vale <strong style="color:#e8c84a">3 Puntos de Prestigio</strong>.</div></div>
+      </div>
+      <div class="warn">⚠️ Los Nobles no se reponen. Si alguien lo toma, desaparece del juego.</div>
+      <div class="tip">💡 Los Nobles son puntos muy eficientes — 3 puntos de golpe. Orienta tu estrategia hacia al menos 1 Noble desde el inicio.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Final del juego y victoria</div>
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#cc6633">🏆 ¿Cómo se gana?</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Cuando un jugador llega a <strong style="color:#e8c84a">15+ Puntos de Prestigio</strong>, la ronda actual se completa para que todos jueguen el mismo número de turnos.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Todos cuentan sus puntos: <strong>cartas de desarrollo</strong> + <strong>Nobles</strong>.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Gana quien tenga más puntos. En caso de empate → gana quien tenga <strong>menos cartas de desarrollo compradas</strong>.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>OBJETIVO: 15 PUNTOS DE PRESTIGIO</span>
+    <span>1 ACCIÓN POR TURNO · MÁX. 10 FICHAS</span>
+  </footer>
+</div>
+
+<!-- ===== ACCIONES ===== -->
+<div id="tab-acciones" class="tab-panel">
+
+  <div class="section-title">Las 4 acciones en detalle</div>
+  <div class="actions-grid">
+
+    <div class="action-card open" onclick="toggleAction(this)">
+      <div class="action-header">
+        <span class="action-icon">💎</span>
+        <div>
+          <div class="action-name">Tomar 3 gemas distintas</div>
+          <div class="action-sub">Acción A · La más común</div>
+        </div>
+        <span class="action-chev">▼</span>
+      </div>
+      <div class="action-body">
+        <div class="desc">Toma 1 ficha de cada uno de 3 colores diferentes del suministro central. No puedes tomar fichas de oro con esta acción.</div>
+        <div class="tip">✅ Puedes tomar menos de 3 si quieres (1 o 2 gemas de colores distintos). Pero normalmente conviene tomar las 3.</div>
+        <div class="warn">⚠️ Recuerda verificar que no superes el límite de 10 fichas después de tomarlas.</div>
+      </div>
+    </div>
+
+    <div class="action-card" onclick="toggleAction(this)">
+      <div class="action-header">
+        <span class="action-icon">✌️</span>
+        <div>
+          <div class="action-name">Tomar 2 gemas iguales</div>
+          <div class="action-sub">Acción B · Condición requerida</div>
+        </div>
+        <span class="action-chev">▼</span>
+      </div>
+      <div class="action-body">
+        <div class="desc">Toma 2 fichas del mismo color. Solo puedes hacerlo si hay <strong style="color:#e8c84a">al menos 4 fichas</strong> de ese color disponibles en el suministro cuando ejecutas la acción.</div>
+        <div class="warn">⚠️ Si solo quedan 3 o menos fichas de ese color, NO puedes usar esta acción con ese color.</div>
+        <div class="tip">💡 Útil cuando necesitas acumular rápidamente un color específico para una carta cara.</div>
+      </div>
+    </div>
+
+    <div class="action-card" onclick="toggleAction(this)">
+      <div class="action-header">
+        <span class="action-icon">📋</span>
+        <div>
+          <div class="action-name">Reservar una carta</div>
+          <div class="action-sub">Acción C · Único modo de obtener oro</div>
+        </div>
+        <span class="action-chev">▼</span>
+      </div>
+      <div class="action-body">
+        <div class="desc">Toma 1 carta del tablero (visible) o la carta del tope de cualquier mazo boca abajo (sin verla). La guardas en tu mano. Tomas 1 ficha de <strong style="color:#e8c84a">oro (comodín)</strong> si quedan disponibles.</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Máximo <strong>3 cartas reservadas</strong> en tu mano en cualquier momento. No puedes reservar una 4ª si ya tienes 3.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Las cartas reservadas solo tú puedes comprarlas. No las pueden robar otros jugadores.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Si no hay fichas de oro disponibles, sigues pudiendo reservar la carta pero sin recibir oro.</div></div>
+        </div>
+        <div class="tip">💡 Reservar es también una forma de bloquear a un rival: si alguien necesita una carta específica, puedes reservarla tú primero.</div>
+        <div class="warn">⚠️ Las cartas reservadas no pueden descartarse — la única forma de quitártelas es comprándolas.</div>
+      </div>
+    </div>
+
+    <div class="action-card" onclick="toggleAction(this)">
+      <div class="action-header">
+        <span class="action-icon">🛒</span>
+        <div>
+          <div class="action-name">Comprar una carta</div>
+          <div class="action-sub">Acción D · El motor del juego</div>
+        </div>
+        <span class="action-chev">▼</span>
+      </div>
+      <div class="action-body">
+        <div class="desc">Compra 1 carta visible del tablero o 1 de tus cartas reservadas. Pagas su costo usando fichas de gemas y/o bonos de tus cartas ya compradas.</div>
+        <div class="section-title" style="margin-top:8px">¿Cómo se paga?</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Bonos de cartas:</strong> Cada carta que ya compraste produce 1 bono de su color. Los bonos se usan como descuento permanente (1 bono = 1 gema de descuento). Nunca se pierden ni se devuelven.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Fichas de gemas:</strong> El resto del costo después de aplicar bonos se paga con fichas del suministro. Se devuelven al suministro central.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Fichas de oro:</strong> El oro es comodín — puede sustituir cualquier color que te falte. También se devuelve al suministro al pagar.</div></div>
+        </div>
+        <div class="tip">💡 Si tus bonos cubren todo el costo → la carta es gratis. No gastas ninguna ficha.</div>
+        <div class="info">📌 Al comprar una carta del tablero, se roba inmediatamente una nueva del mazo correspondiente para rellenar el hueco (si queda alguna en el mazo).</div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>1 ACCIÓN POR TURNO — OBLIGATORIO ELEGIR UNA</span>
+    <span>ORO = COMODÍN · SE DEVUELVEN LAS FICHAS AL PAGAR</span>
+  </footer>
+</div>
+
+<!-- ===== CARTAS ===== -->
+<div id="tab-cartas" class="tab-panel">
+
+  <div class="section-title">Cartas de Desarrollo — 3 niveles</div>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#88aa66">⬤ Nivel 1 — 40 cartas (verde)</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="desc">Las más baratas y fáciles de comprar. La mayoría vale 0 puntos — su valor está en el bono que producen para comprar cartas mejores. Algunas dan 1 punto.</div>
+      <div class="tip">💡 Construye tu motor aquí. Las cartas de Nivel 1 son la base de toda estrategia.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#aaaa55">⬤⬤ Nivel 2 — 30 cartas (amarillo)</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="desc">Costo medio-alto. Suelen valer entre 1–3 puntos. Tienen los mismos colores de bono que Nivel 1 pero producen más puntos por carta.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#cc6644">⬤⬤⬤ Nivel 3 — 20 cartas (rojo)</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="desc">Las más caras y valiosas. Valen entre 3–5 puntos cada una. Son el objetivo final para conseguir los 15 puntos rápidamente.</div>
+      <div class="tip">💡 Para comprar un Nivel 3 normalmente necesitas muchos bonos de cartas de Nivel 1 y 2 ya acumuladas.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Anatomía de una carta de desarrollo</div>
+  <div class="card open">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#cc9944">🃏 Cómo leer una carta</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num" style="background:#1a2a10;border-color:#3a6020;color:#88cc44">PTS</div><div class="step-text"><strong>Esquina superior izquierda:</strong> Puntos de Prestigio que vale la carta. Muchas cartas de Nivel 1 tienen 0.</div></div>
+        <div class="step"><div class="step-num" style="background:#1a0a20;border-color:#4a1a60;color:#aa66cc">💎</div><div class="step-text"><strong>Esquina superior derecha:</strong> El color del bono que produce esta carta una vez comprada. Permanente para siempre.</div></div>
+        <div class="step"><div class="step-num" style="background:#1a1008;border-color:#4a2a10;color:#cc8833">$</div><div class="step-text"><strong>Esquina inferior izquierda:</strong> El costo: qué gemas y cuántas necesitas pagar para comprarla.</div></div>
+      </div>
+      <div class="info">📌 Una vez comprada, la carta es tuya para siempre. Su bono (esquina superior derecha) reduce el costo de futuras compras de forma permanente y acumulativa.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Tiles de Nobles</div>
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#e8c84a">👑 Cómo leer un Noble</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Esquina superior izquierda:</strong> Siempre 3 Puntos de Prestigio.</div></div>
+        <div class="step"><div class="step-num">💎</div><div class="step-text"><strong>Requisito:</strong> Necesitas tener ese número de cartas compradas de ese color. Ej: "3 azul, 3 verde" = tienes 3+ cartas con bono azul Y 3+ con bono verde.</div></div>
+      </div>
+      <div class="warn">⚠️ Los requisitos del Noble se cubren SOLO con bonos de cartas compradas — las fichas de gema no cuentan para los Nobles.</div>
+      <div class="tip">💡 Los Nobles se visitan automáticamente — no gastas ninguna acción. Si calificas al final de tu turno, lo recibes sí o sí.</div>
+    </div>
+  </div>
+
+  <div class="section-title">El token de Oro (comodín)</div>
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#e8c84a">🥇 Reglas del oro</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="desc">El oro es un comodín que puede sustituir <strong>cualquier color de gema</strong> al pagar una carta. Hay solo 5 fichas de oro en el juego.</div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Solo se consigue reservando una carta (Acción C).</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Al usarlo para comprar, se devuelve al suministro central.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Cuenta para el límite de 10 fichas.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>90 CARTAS TOTAL: 40+30+20 por nivel</span>
+    <span>BONOS SON PERMANENTES Y ACUMULATIVOS</span>
+  </footer>
+</div>
+
+<!-- ===== SETUP ===== -->
+<div id="tab-setup" class="tab-panel">
+
+  <div class="section-title">Preparación del tablero</div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-text">Mezcla cada mazo de desarrollo por separado (Nivel 1, 2 y 3). Colócalos en columna con Nivel 1 abajo, Nivel 2 en medio, Nivel 3 arriba.</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Coloca 4 cartas boca arriba a la derecha de cada mazo (12 cartas visibles en total).</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Mezcla los Nobles y coloca (número de jugadores + 1) boca arriba encima del tablero. Guarda el resto en la caja.</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text">Coloca las fichas en 6 pilas por color. Ajusta según número de jugadores (ver tabla abajo).</div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-text">El jugador más joven empieza. Continúa en sentido horario.</div></div>
+  </div>
+
+  <div class="section-title">Configuración por número de jugadores</div>
+  <table>
+    <tr>
+      <th>Jugadores</th>
+      <th>Fichas por color</th>
+      <th>Fichas de oro</th>
+      <th>Nobles en juego</th>
+    </tr>
+    <tr>
+      <td>2 jugadores</td>
+      <td><strong style="color:#e8c84a">4</strong> de cada color</td>
+      <td>5 (siempre)</td>
+      <td>3 Nobles</td>
+    </tr>
+    <tr>
+      <td>3 jugadores</td>
+      <td><strong style="color:#e8c84a">5</strong> de cada color</td>
+      <td>5 (siempre)</td>
+      <td>4 Nobles</td>
+    </tr>
+    <tr>
+      <td>4 jugadores</td>
+      <td><strong style="color:#e8c84a">7</strong> de cada color</td>
+      <td>5 (siempre)</td>
+      <td>5 Nobles</td>
+    </tr>
+  </table>
+  <div class="info">📌 Las fichas de oro NUNCA se retiran — siempre son 5, sin importar el número de jugadores.</div>
+
+  <div class="section-title">Referencia rápida de componentes</div>
+  <table>
+    <tr><th>Componente</th><th>Cantidad</th></tr>
+    <tr><td>🃏 Cartas de desarrollo Nivel 1</td><td>40</td></tr>
+    <tr><td>🃏 Cartas de desarrollo Nivel 2</td><td>30</td></tr>
+    <tr><td>🃏 Cartas de desarrollo Nivel 3</td><td>20</td></tr>
+    <tr><td>👑 Tiles de Nobles</td><td>10 (se usan n+1)</td></tr>
+    <tr><td>💎 Fichas de gema (5 colores)</td><td>7 por color = 35</td></tr>
+    <tr><td>🥇 Fichas de oro</td><td>5</td></tr>
+  </table>
+
+  <footer>
+    <span>FICHAS DE ORO: SIEMPRE 5, SIN IMPORTAR JUGADORES</span>
+    <span>NOBLES = JUGADORES + 1</span>
+  </footer>
+</div>
+
+<!-- ===== ESTRATEGIA ===== -->
+<div id="tab-estrategia" class="tab-panel">
+
+  <div class="section-title">Principios básicos</div>
+
+  <div class="strategy-card">
+    <div class="strategy-title">🏗️ Construye tu motor primero</div>
+    <div class="strategy-text">Las cartas de Nivel 1 valen 0 puntos pero son la base de todo. Construir bonos temprano hace que las cartas caras de Nivel 2 y 3 sean mucho más accesibles. No vayas directo a cartas de puntos sin tener bonos suficientes.</div>
+  </div>
+
+  <div class="strategy-card">
+    <div class="strategy-title">👑 Apunta a al menos 1 Noble desde el inicio</div>
+    <div class="strategy-text">Los Nobles dan 3 puntos de golpe sin gastar una acción — son los puntos más eficientes del juego. Mira los Nobles disponibles al inicio de la partida y orienta tus colores hacia cubrir al menos uno. No cambies de objetivo a medias del juego.</div>
+  </div>
+
+  <div class="strategy-card">
+    <div class="strategy-title">📋 Reservar con propósito</div>
+    <div class="strategy-text">Reserva una carta cuando: (1) alguien más está cerca de comprarla y la necesitas, (2) aparece una carta cara de Nivel 3 que quieres pero no puedes pagar aún, o (3) quieres el token de oro para cerrar una compra. No reserves por reservar — bloqueas tu mano con cartas que tal vez no compres.</div>
+  </div>
+
+  <div class="strategy-card">
+    <div class="strategy-title">💎 Controla un color</div>
+    <div class="strategy-text">Si te especializas en 1–2 colores, puedes acumular muchos bonos de esos colores rápidamente y hacer las cartas de esos colores casi gratis. Esto también puede bloquear a rivales que necesitan el mismo color.</div>
+  </div>
+
+  <div class="strategy-card">
+    <div class="strategy-title">⏱️ Vigila el ritmo de la partida</div>
+    <div class="strategy-text">Cuando alguien llega a 12–13 puntos, la partida termina pronto. Si no estás cerca, puede valer la pena cambiar táctica: ir por puntos directos con Nivel 3 en vez de seguir construyendo el motor. Splendor puede decidirse en los últimos 2–3 turnos.</div>
+  </div>
+
+  <div class="strategy-card">
+    <div class="strategy-title">🚫 Errores comunes a evitar</div>
+    <div class="strategy-text">
+      • No acumules fichas sin plan — terminar con 10 fichas y no poder comprar nada es perder un turno.<br>
+      • No ignores los Nobles hasta el final — para cuando los ves, ya es tarde para cambiar tu estrategia.<br>
+      • No reserves más de 2 cartas a la vez — necesitas seguir comprando para generar bonos.<br>
+      • No olvides que el oro se devuelve al pagar — úsalo libremente, no lo atesores.
+    </div>
+  </div>
+
+  <div class="section-title">Desempate</div>
+  <div class="info">🏆 En caso de empate en puntos al final → gana quien tenga <strong>menos cartas de desarrollo compradas</strong>. Si sigue empate → comparten la victoria.</div>
+
+  <footer>
+    <span>GANA: MÁS PUNTOS AL TERMINAR LA RONDA QUE LLEGÓ A 15</span>
+    <span>DESEMPATE: MENOS CARTAS COMPRADAS</span>
+  </footer>
+</div>
+
+</div><!-- /container -->
+
+<script>
+function toggleCard(header){header.parentElement.classList.toggle('open')}
+function toggleAction(card){card.classList.toggle('open')}
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

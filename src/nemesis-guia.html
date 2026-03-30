@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nemesis — Guía Rápida</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#080c10;color:#c8d4dc;font-family:'Courier New',monospace;min-height:100vh;
+    background-image:radial-gradient(ellipse at 10% 20%,#0a1520 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 80%,#100a08 0%,transparent 50%)}
+  header{border-bottom:1px solid #1a3040;padding:14px 16px;
+    background:linear-gradient(180deg,#050d14 0%,#080c10 100%);
+    display:flex;align-items:center;gap:12px}
+  .back-btn{color:#4a8aaa;font-size:12px;text-decoration:none;border:1px solid #1a3040;padding:4px 10px;border-radius:4px;font-family:monospace;letter-spacing:1px;transition:all 0.15s;flex-shrink:0}
+  .back-btn:hover{background:#0a1a28;color:#7faacc}
+  .sub{font-size:9px;letter-spacing:4px;color:#2a6080;text-transform:uppercase}
+  .main-title{font-size:18px;font-weight:bold;color:#7faacc;letter-spacing:2px}
+  .tagline{font-size:10px;color:#334455;letter-spacing:1px;margin-top:2px}
+
+  .nav{display:flex;gap:3px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #111820;background:#060a0e;overflow-x:auto}
+  .nav-btn{background:transparent;border:1px solid #1a2530;color:#446677;
+    padding:6px 12px;cursor:pointer;font-size:10px;border-radius:2px;white-space:nowrap;
+    text-transform:uppercase;letter-spacing:1px;font-family:'Courier New',monospace;transition:all 0.15s}
+  .nav-btn.active{background:#0d2030;border-color:#2a6080;color:#7faacc}
+  .nav-btn:hover{border-color:#2a4555;color:#7faacc}
+
+  .container{padding:12px 14px;max-width:780px;margin:0 auto}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  /* CARDS */
+  .card{background:#0a1218;border:1px solid #1a2530;border-radius:3px;overflow:hidden;margin-bottom:8px}
+  .card-header{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;transition:background 0.15s}
+  .card-header:hover{background:#0d1820}
+  .card-title{font-size:13px;font-weight:bold;flex:1}
+  .card-badge{font-size:9px;padding:2px 8px;border-radius:2px;font-family:'Courier New',monospace;letter-spacing:1px;color:#000;font-weight:bold;flex-shrink:0}
+  .card-chevron{color:#2a4555;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .card.open .card-chevron{transform:rotate(180deg)}
+  .card-body{display:none;border-top:1px solid #111820;padding:12px 14px}
+  .card.open .card-body{display:block}
+
+  /* STAT PILLS */
+  .stat-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .stat-pill{display:flex;flex-direction:column;background:#0d1820;border:1px solid #1a2530;border-radius:3px;padding:6px 10px;min-width:110px}
+  .stat-pill-label{font-size:8px;color:#335566;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+  .stat-pill-value{font-size:13px;font-weight:bold}
+
+  .desc{font-size:12px;color:#8899aa;line-height:1.7;margin-bottom:10px}
+  .steps{margin-bottom:10px}
+  .step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+  .step-num{background:#0d2030;border:1px solid #2a4555;color:#7faacc;font-size:10px;font-weight:bold;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+  .step-text{font-size:12px;color:#8899aa;line-height:1.6}
+  .warning{background:#1a0c08;border:1px solid #5a2010;border-radius:3px;padding:8px 12px;font-size:11px;color:#cc6644;margin:8px 0;line-height:1.6}
+  .info{background:#081420;border:1px solid #104060;border-radius:3px;padding:8px 12px;font-size:11px;color:#6699bb;margin:8px 0;line-height:1.6}
+  .tip{background:#0a1408;border:1px solid #1a4020;border-radius:3px;padding:8px 12px;font-size:11px;color:#55aa66;margin:8px 0;line-height:1.6}
+  .section-title{font-size:9px;letter-spacing:3px;color:#2a4555;text-transform:uppercase;margin-bottom:8px;margin-top:14px;border-bottom:1px solid #0f1820;padding-bottom:4px}
+  .section-title:first-child{margin-top:0}
+  .tag{font-size:9px;padding:2px 7px;border-radius:2px;font-family:'Courier New',monospace;letter-spacing:1px;margin:2px}
+  .tags{display:flex;flex-wrap:wrap;margin-top:8px}
+
+  /* PHASE FLOW */
+  .flow{display:flex;flex-direction:column;gap:4px;margin-bottom:16px}
+  .flow-item{display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;background:#0a1218;border:1px solid #1a2530;border-radius:3px;transition:all 0.15s}
+  .flow-item:hover{border-color:#2a4555;background:#0d1820}
+  .flow-item.active{border-color:#2a6080;background:#0d2030}
+  .flow-num{background:#0d2030;border:1px solid #2a4555;color:#7faacc;font-size:11px;font-weight:bold;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .flow-item.active .flow-num{background:#1a4060;border-color:#4a90b0;color:#aad4ee}
+  .flow-label{font-size:12px;color:#6699bb;flex:1}
+  .flow-item.active .flow-label{color:#aad4ee}
+  .flow-sub{font-size:10px;color:#334455}
+  .flow-arrow{color:#1a3040;font-size:12px}
+  #phase-detail{display:none;background:#0a1218;border:1px solid #1a3040;border-radius:3px;padding:14px;margin-bottom:16px}
+  #phase-detail.visible{display:block}
+
+  /* DICE TABLE */
+  table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+  th{background:#0d1820;color:#446677;padding:6px 10px;text-align:left;border:1px solid #111820;font-family:'Courier New',monospace;letter-spacing:1px;font-size:9px;text-transform:uppercase}
+  td{padding:7px 10px;border:1px solid #0f1820;color:#8899aa;vertical-align:top;line-height:1.5}
+  tr:nth-child(even) td{background:#0b1218}
+  .result-good{color:#55aa66}
+  .result-mid{color:#aaaa55}
+  .result-bad{color:#cc6644}
+
+  /* INTRUDER CARDS */
+  .intruder-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin-bottom:16px}
+  .intruder-card{background:#0a1218;border:1px solid #1a2530;border-radius:3px;overflow:hidden}
+  .intruder-head{padding:8px 12px;display:flex;align-items:center;gap:8px}
+  .intruder-icon{font-size:20px}
+  .intruder-name{font-size:13px;font-weight:bold;color:#cc8844}
+  .intruder-info{padding:0 12px 10px;font-size:11px;color:#667788;line-height:1.6}
+  .intruder-stat{display:flex;gap:6px;margin-bottom:3px}
+  .intruder-stat-label{color:#446677;min-width:65px}
+  .intruder-stat-value{color:#8899aa}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  @media(max-width:480px){.grid2{grid-template-columns:1fr}}
+
+  footer{margin-top:16px;padding-top:10px;border-top:1px solid #0f1820;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+  footer span{font-size:9px;color:#1a2530}
+</style>
+</head>
+<body>
+
+<header>
+  <span style="font-size:26px">👾</span>
+  <div>
+    <a href="index.html" class="back-btn">← Biblioteca</a>
+    <div>
+      <div class="sub">Guía de referencia</div>
+      <div class="main-title">NEMESIS</div>
+      <div class="tagline">Juego base · Semi-cooperativo · Supervivencia espacial</div>
+    </div>
+  </div>
+</header>
+
+<div class="nav">
+  <button class="nav-btn active" id="navbtn-phases" onclick="switchTab('phases',this)">🔄 Fases</button>
+  <button class="nav-btn" id="navbtn-actions" onclick="switchTab('actions',this)">⚡ Acciones</button>
+  <button class="nav-btn" id="navbtn-combat" onclick="switchTab('combat',this)">🔫 Combate</button>
+  <button class="nav-btn" id="navbtn-noise" onclick="switchTab('noise',this)">📡 Ruido</button>
+  <button class="nav-btn" id="navbtn-intruders" onclick="switchTab('intruders',this)">👾 Intruders</button>
+  <button class="nav-btn" id="navbtn-tokens" onclick="switchTab('tokens',this)">🔥 Tokens</button>
+  <button class="nav-btn" id="navbtn-wounds" onclick="switchTab('wounds',this)">🩸 Heridas</button>
+  <button class="nav-btn" id="navbtn-objectives" onclick="switchTab('objectives',this)">🎯 Objetivos</button>
+</div>
+
+<div class="container">
+
+<!-- ===== FASES ===== -->
+<div id="tab-phases" class="tab-panel active">
+  <div class="section-title">Estructura de cada turno</div>
+  <div class="flow" id="phase-flow">
+    <div class="flow-item" onclick="selectPhase(0)">
+      <div class="flow-num">1</div>
+      <div><div class="flow-label">🧑 Fase de Jugadores</div><div class="flow-sub">Robar cartas → Rondas de 2 acciones</div></div>
+      <div class="flow-arrow">›</div>
+    </div>
+    <div class="flow-item" onclick="selectPhase(1)">
+      <div class="flow-num">2</div>
+      <div><div class="flow-label">👾 Fase de Evento</div><div class="flow-sub">Time Track → Ataques → Fuego → Evento → Bag</div></div>
+      <div class="flow-arrow">›</div>
+    </div>
+  </div>
+
+  <div id="phase-detail"></div>
+
+  <div class="section-title">Condiciones de fin de partida</div>
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-title" style="color:#cc6644">💀 El juego termina cuando...</span>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">A</div><div class="step-text"><strong style="color:#cc8844">Time Track llega al rojo:</strong> El barco hace hyperspace. Todos los personajes que no están en hibernación mueren por la fuerza G.</div></div>
+        <div class="step"><div class="step-num">B</div><div class="step-text"><strong style="color:#cc8844">Self-Destruct llega al cráneo:</strong> El barco explota. Todos mueren, incluyendo Intruders.</div></div>
+        <div class="step"><div class="step-num">C</div><div class="step-text"><strong style="color:#cc8844">9 Fire markers o 9 Malfunction markers:</strong> El barco explota. Todo muere.</div></div>
+        <div class="step"><div class="step-num">D</div><div class="step-text"><strong style="color:#cc8844">El último personaje activo muere, hiberna o escapa:</strong> No hay más acciones posibles.</div></div>
+      </div>
+      <div class="section-title">Victoria — después del fin</div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Engines Check:</strong> Si 2 o 3 motores están dañados → el barco explota, hibernados mueren.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Coordinates Check:</strong> Si el barco no va a la Tierra → hibernados mueren (excepto quien tenga objetivo Mars).</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Contamination Check:</strong> Escanea todas tus cartas. Si hay 1+ INFECTED → baraja todo y roba 4. Si hay 1+ Contamination card → mueres.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Objective Check:</strong> ¿Completaste tu objetivo? Solo entonces ganas.</div></div>
+      </div>
+      <div class="warning">⚠️ Para ganar DEBES sobrevivir (hibernar o usar Escape Pod) Y completar tu objetivo. Ambas condiciones.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Momentos críticos únicos</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-title" style="color:#aaaa55">👁️ Primer Encuentro</span>
+        <span class="card-chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="desc">Cuando la primera miniatura de Intruder aparece en el tablero, TODOS los jugadores deben elegir inmediatamente UNA de sus 2 cartas de Objetivo. La otra se elimina del juego boca abajo, sin mostrar.</div>
+        <div class="tip">💡 Desde ese momento cada jugador tiene solo 1 objetivo secreto.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-title" style="color:#cc6644">☠️ Primer Muerto</span>
+        <span class="card-chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="desc">Cuando el primer personaje muere, la IA del barco activa protocolos de emergencia: todos los Escape Pods se desbloquean automáticamente.</div>
+        <div class="tip">💡 El jugador cuyo personaje muere primero puede continuar jugando como Intruder (modo opcional).</div>
+      </div>
+    </div>
+  </div>
+  <footer><span>CADA TURNO: Fase Jugadores → Fase Evento</span><span>Semi-cooperativo — cada quien tiene su propio objetivo</span></footer>
+</div>
+
+<!-- ===== ACCIONES ===== -->
+<div id="tab-actions" class="tab-panel">
+  <div class="section-title">Costo de acciones</div>
+  <div class="info">📋 Cada acción tiene un <strong>costo en número</strong> de cartas de Acción que debes descartar de tu mano para pagarla. Las cartas de Contaminación NO son cartas de Acción y no pueden usarse para pagar costos.</div>
+  <div class="info">🃏 Cada turno tienes una mano de 5 cartas. Realizas <strong>rondas de 2 acciones</strong>. Si solo haces 1, debes pasar. Una vez que pasas, no puedes hacer más acciones ese turno.</div>
+
+  <div class="section-title">Acciones básicas (siempre disponibles)</div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#2a6080">BÁSICA</span>
+    <span class="card-title" style="color:#7faacc">🚶 Movimiento</span>
+    <span style="font-size:10px;color:#334455">Costo: 1 carta</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-pill-label">En combate</div><div class="stat-pill-value" style="color:#cc6644">❌ Solo Escape</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Fuera combate</div><div class="stat-pill-value" style="color:#55aa66">✅ Sí</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Noise roll</div><div class="stat-pill-value" style="color:#aaaa55">⚠️ Posible</div></div>
+    </div>
+    <div class="desc">Mueve tu miniatura a la habitación vecina. Dos habitaciones son vecinas si están conectadas por 1 corredor. Las puertas cerradas bloquean el acceso.</div>
+    <div class="section-title">Al entrar a una habitación:</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Si estaba <strong>boca abajo (inexplorada)</strong> → dale la vuelta y revela el token de Exploración.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Si la habitación está <strong>vacía</strong> (sin personajes ni Intruders) → realiza un <strong>Noise Roll</strong>.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Si hay alguien en la habitación → NO hay Noise Roll. Si hay un Intruder → estás en Combate.</div></div>
+    </div>
+    <div class="warning">⚠️ Si hay un Intruder en tu habitación, no puedes usar Movimiento normal — debes usar la regla de Escape.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#2a6080">BÁSICA</span>
+    <span class="card-title" style="color:#7faacc">🐾 Movimiento Cuidadoso</span>
+    <span style="font-size:10px;color:#334455">Costo: 1 carta</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-pill-label">En combate</div><div class="stat-pill-value" style="color:#cc6644">❌ No</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Noise roll</div><div class="stat-pill-value" style="color:#55aa66">❌ Evitado</div></div>
+    </div>
+    <div class="desc">Igual que Movimiento, pero en vez de hacer Noise Roll, <strong>colocas tú mismo un Noise marker</strong> en un corredor de tu elección conectado a la habitación a la que entras.</div>
+    <div class="warning">⚠️ Si todos los corredores de la habitación destino ya tienen Noise markers, NO puedes usar Movimiento Cuidadoso.</div>
+    <div class="tip">💡 Te da control sobre dónde va el ruido — útil para manipular el movimiento de Intruders.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#6a2020">COMBATE</span>
+    <span class="card-title" style="color:#cc6644">🔫 Disparar</span>
+    <span style="font-size:10px;color:#334455">Costo: 1 carta + 1 Ammo</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-pill-label">En combate</div><div class="stat-pill-value" style="color:#55aa66">✅ Sí</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Fuera combate</div><div class="stat-pill-value" style="color:#cc6644">❌ No</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Contaminación</div><div class="stat-pill-value" style="color:#55aa66">❌ No riesgo</div></div>
+    </div>
+    <div class="desc">Ataca con un arma en tu Hand slot. Descarta 1 Ammo del arma y tira el dado de combate. Ver tab Combate para resultados.</div>
+    <div class="warning">⚠️ Solo puedes disparar a Intruders en tu misma habitación. Necesitas ammo disponible.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#6a2020">COMBATE</span>
+    <span class="card-title" style="color:#cc6644">👊 Ataque Melee</span>
+    <span style="font-size:10px;color:#334455">Costo: 1 carta + 1 Contaminación</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-pill-label">En combate</div><div class="stat-pill-value" style="color:#55aa66">✅ Sí</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Contaminación</div><div class="stat-pill-value" style="color:#cc6644">⚠️ SIEMPRE</div></div>
+    </div>
+    <div class="desc">Ataca con tus manos (o lo que encuentres). Obligatoriamente <strong>roba 1 carta de Contaminación</strong> y ponla en tu descarte. Luego elige un Intruder y tira el dado.</div>
+    <div class="warning">⚠️ Riesgo de Herida Grave si fallas. Ver tab Combate para resultados del dado.</div>
+    <div class="warning">☣️ El Ataque Melee SIEMPRE te da una carta de Contaminación — aunque no falle, aunque mates al Intruder.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#2a6080">BÁSICA</span>
+    <span class="card-title" style="color:#7faacc">🔍 Buscar (Search)</span>
+    <span style="font-size:10px;color:#334455">Costo: ver habitación</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-pill-label">En combate</div><div class="stat-pill-value" style="color:#55aa66">✅ Sí</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Items disponibles</div><div class="stat-pill-value" style="color:#aaaa55">Ver Room tile</div></div>
+    </div>
+    <div class="desc">Busca en la habitación actual. Cada habitación tiene un contador de Items (definido por el token de Exploración). Cuando el contador llega a 0, no hay más items que buscar.</div>
+    <div class="tip">💡 Cada mazo de items (hay 3 colores) corresponde a un tipo de habitación diferente.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#2a6080">BÁSICA</span>
+    <span class="card-title" style="color:#7faacc">📦 Recoger Objeto Pesado</span>
+    <span style="font-size:10px;color:#334455">Costo: 1 carta</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Recoge 1 Objeto Pesado en tu habitación: Cadáver de Personaje, Carcasa de Intruder, o Huevo de Intruder.</div>
+    <div class="info">📌 Los Items normales encontrados al buscar NO requieren esta acción. Solo aplica a Objetos (tokens).</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#2a6080">BÁSICA</span>
+    <span class="card-title" style="color:#7faacc">🔄 Intercambiar (Trade)</span>
+    <span style="font-size:10px;color:#334455">Costo: 1 carta</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Inicia un intercambio con todos los personajes en tu misma habitación. Pueden mostrarse items y acordar transacciones. Solo el que inicia la acción la "paga".</div>
+    <div class="warning">⚠️ Los personajes NO pueden intercambiar Ammo.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#2a4040">CRAFTING</span>
+    <span class="card-title" style="color:#55aaaa">🔧 Crafting</span>
+    <span style="font-size:10px;color:#334455">Costo: 2 cartas de Item específicas</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Descarta 2 cartas de Item con los iconos de Craft azules correctos para obtener la carta de Crafted Item correspondiente.</div>
+    <div class="info">📌 No puedes construir un item si su carta no está disponible, aunque tengas los componentes.</div>
+  </div></div>
+
+  <div class="section-title">Otros tipos de acciones</div>
+  <div class="info">🃏 <strong>Acciones de cartas de Acción:</strong> Cada personaje tiene 10 cartas de Acción únicas. Para usarlas: descarta la carta + paga su costo adicional.<br><br>
+  🏠 <strong>Acciones de habitación (Room Actions):</strong> La mayoría de habitaciones tienen una acción especial. Ver Room Sheet.<br><br>
+  🎒 <strong>Acciones de Items:</strong> Algunos items permiten acciones especiales descritas en su carta.</div>
+</div>
+
+<!-- ===== COMBATE ===== -->
+<div id="tab-combat" class="tab-panel">
+
+  <div class="section-title">Dado de combate — Disparar (Shoot)</div>
+  <table>
+    <tr><th>Resultado</th><th>Larva / Creeper</th><th>Adult</th><th>Breeder / Queen</th></tr>
+    <tr><td>💀 <strong>Miss</strong></td><td class="result-bad">Fallo</td><td class="result-bad">Fallo</td><td class="result-bad">Fallo</td></tr>
+    <tr><td>🎯 <strong>1 Hit (pequeño)</strong></td><td class="result-good">1 Injury</td><td class="result-bad">Fallo</td><td class="result-bad">Fallo</td></tr>
+    <tr><td>🎯 <strong>1 Hit (grande)</strong></td><td class="result-good">1 Injury</td><td class="result-good">1 Injury</td><td class="result-bad">Fallo</td></tr>
+    <tr><td>⭐ <strong>Hit seguro</strong></td><td class="result-good">1 Injury</td><td class="result-good">1 Injury</td><td class="result-good">1 Injury</td></tr>
+    <tr><td>💥 <strong>2 Hits</strong></td><td class="result-good">2 Injuries</td><td class="result-good">2 Injuries</td><td class="result-good">2 Injuries</td></tr>
+  </table>
+  <div class="info">📌 Algunas armas modifican estos resultados (ej. la Pistol convierte 2 Hits en 1 Hit). Lee siempre la carta del arma.</div>
+
+  <div class="section-title">Dado de combate — Melee Attack</div>
+  <table>
+    <tr><th>Resultado</th><th>Larva / Creeper</th><th>Adult</th><th>Breeder / Queen</th></tr>
+    <tr><td>💀 <strong>Miss</strong></td><td class="result-bad">Fallo + Herida Grave</td><td class="result-bad">Fallo + Herida Grave</td><td class="result-bad">Fallo + Herida Grave</td></tr>
+    <tr><td>🎯 <strong>1 Hit (pequeño)</strong></td><td class="result-good">1 Injury</td><td class="result-bad">Fallo + Herida Grave</td><td class="result-bad">Fallo + Herida Grave</td></tr>
+    <tr><td>🎯 <strong>1 Hit (grande)</strong></td><td class="result-good">1 Injury</td><td class="result-good">1 Injury</td><td class="result-bad">Fallo + Herida Grave</td></tr>
+    <tr><td>⭐ <strong>Hit seguro</strong></td><td class="result-good">1 Injury</td><td class="result-good">1 Injury</td><td class="result-good">1 Injury</td></tr>
+    <tr><td>💥 <strong>2 Hits</strong></td><td class="result-good" colspan="3">Solo 1 Injury (¡melee no hace 2!)</td></tr>
+  </table>
+  <div class="warning">⚠️ Melee siempre otorga 1 carta de Contaminación, independientemente del resultado.</div>
+
+  <div class="section-title">Escape del combate</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#aaaa55">🏃 Cómo escapar de una habitación con Intruders</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Usa una acción de Movimiento hacia una habitación vecina.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Antes de mover</strong> tu miniatura, resuelve 1 Intruder Attack por CADA Intruder en la habitación.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Si sobrevives, mueve tu miniatura a la habitación elegida.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Si la habitación destino está vacía → realiza Noise Roll. Si era inexplorada → explórala normalmente.</div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-text">Si mueres intentando escapar, tu cadáver queda en la habitación de la que intentabas salir.</div></div>
+    </div>
+  </div></div>
+
+  <div class="section-title">Ataque de Intruder (Intruder Attack)</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#cc6644">👾 ¿Cuándo y cómo atacan?</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Los Intruders atacan en 3 situaciones: Surprise Attack, Fase de Evento (paso 5), y cuando intentas Escapar.</div>
+    <div class="section-title">Secuencia de ataque:</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Elige objetivo:</strong> El Intruder ataca al personaje con MENOS cartas en la mano. En caso de empate → el que tiene el token de Primer Jugador (o siguiente en orden).</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Roba 1 carta de Intruder Attack</strong> y resuélvela. Si el símbolo del Intruder aparece en la carta → aplica el efecto. Si no → el ataque falla.</div></div>
+    </div>
+    <div class="info">📌 En Surprise Attack → ataca al personaje que desencadenó el Encuentro.<br>
+    📌 En Escape → ataca al personaje que está escapando.</div>
+    <div class="section-title">Larva — regla especial:</div>
+    <div class="warning">☣️ Cuando una Larva ataca: NO roba carta de ataque. En cambio, coloca la miniatura de Larva en el Character board del objetivo (¡Infestación!) y ese jugador toma 1 carta de Contaminación.</div>
+  </div></div>
+
+  <div class="section-title">Encuentro (Encounter)</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#cc8844">⚠️ Cómo resolver un Encuentro</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Un Encuentro ocurre cuando un Intruder aparece en una habitación donde hay un personaje (por Noise Roll, carta de Evento, etc.).</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Descarta todos los Noise markers de todos los corredores conectados a esa habitación.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Roba 1 token del Intruder bag. Coloca la miniatura correspondiente en la habitación.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Compara el número del token con el número de cartas en tu mano (Acción + Contaminación). Si tienes MENOS cartas que el número → <strong>Surprise Attack.</strong></div></div>
+    </div>
+    <div class="warning">⚠️ Si sacas el token Blank: coloca 1 Noise marker en cada corredor de la habitación. No aparece ningún Intruder.</div>
+    <div class="tip">💡 Tener más cartas en la mano al entrar a habitaciones reduce el riesgo de Surprise Attack.</div>
+  </div></div>
+</div>
+
+<!-- ===== RUIDO ===== -->
+<div id="tab-noise" class="tab-panel">
+  <div class="info">🔊 El ruido es el principal mecanismo por el que aparecen los Intruders. Cada vez que entras a una habitación vacía, tiras el dado de ruido.</div>
+
+  <div class="section-title">Noise Roll — resultados</div>
+  <table>
+    <tr><th>Resultado</th><th>Qué pasa</th></tr>
+    <tr><td><strong>1, 2, 3 o 4</strong></td><td>Coloca 1 Noise marker en el corredor con ese número conectado a tu habitación.</td></tr>
+    <tr><td class="result-bad"><strong>DANGER</strong></td><td>Si hay un Intruder en habitación vecina que no está en combate → se mueve a tu habitación. Si no hay → coloca Noise marker en TODOS los corredores sin marker de tu habitación.</td></tr>
+    <tr><td class="result-good"><strong>SILENCE</strong></td><td>Nada ocurre. No se coloca ningún Noise marker. (Si tienes Slime marker → trata como DANGER)</td></tr>
+  </table>
+
+  <div class="section-title">Regla de Noise markers</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title">📡 ¿Qué hace un Noise marker?</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Los Noise markers marcan corredores. Su única función es registrar actividad sonora para los Intruder bag draws.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Un corredor nunca puede tener más de 1 Noise marker.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Si debes colocar un marker en un corredor que YA tiene uno → resuelve un <strong>Encuentro</strong> en su lugar.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Un Encuentro descarta TODOS los Noise markers de los corredores conectados a esa habitación.</div></div>
+    </div>
+    <div class="tip">💡 El Movimiento Cuidadoso te permite controlar dónde pones el marker, evitando así corredores que ya tienen uno.</div>
+  </div></div>
+
+  <div class="section-title">Corredores Técnicos</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title">🔧 Corredores Técnicos (Technical Corridors)</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Red de ductos que los personajes normalmente NO pueden usar. Los Intruders sí pueden moverse por ellos.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Si un Noise marker debe colocarse en el corredor técnico → se pone en el espacio de Technical Corridors (especial en el tablero).</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">El marker en Technical Corridors se trata como si estuviera en TODAS las entradas de corredores técnicos del barco.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Si un Intruder entra a los corredores técnicos: se descarta, sus injury markers se quitan, su token vuelve al bag.</div></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ===== INTRUDERS ===== -->
+<div id="tab-intruders" class="tab-panel">
+  <div class="section-title">Tipos de Intruders</div>
+  <div class="intruder-grid">
+    <div class="intruder-card">
+      <div class="intruder-head"><span class="intruder-icon">🥚</span><div><div class="intruder-name">Huevo (Egg)</div></div></div>
+      <div class="intruder-info">
+        <div class="intruder-stat"><span class="intruder-stat-label">Injuries p/matar:</span><span class="intruder-stat-value" style="color:#55aa66">1</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Ataca:</span><span class="intruder-stat-value" style="color:#55aa66">No</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Cuenta como Intruder:</span><span class="intruder-stat-value" style="color:#cc6644">NO</span></div>
+        No activa combate. Se puede recoger (Objeto Pesado). Necesario para investigar Weakness.</div>
+    </div>
+    <div class="intruder-card">
+      <div class="intruder-head"><span class="intruder-icon">🐛</span><div><div class="intruder-name">Larva</div></div></div>
+      <div class="intruder-info">
+        <div class="intruder-stat"><span class="intruder-stat-label">Injuries p/matar:</span><span class="intruder-stat-value" style="color:#55aa66">1</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Ataque especial:</span><span class="intruder-stat-value" style="color:#cc6644">Infesta</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Daño:</span><span class="intruder-stat-value" style="color:#cc6644">Larva en board + Contaminación</span></div>
+        Cuando ataca: NO roba carta de ataque. Coloca miniatura de Larva en tu Character board + tomas 1 carta de Contaminación.</div>
+    </div>
+    <div class="intruder-card">
+      <div class="intruder-head"><span class="intruder-icon">🦎</span><div><div class="intruder-name">Creeper</div></div></div>
+      <div class="intruder-info">
+        <div class="intruder-stat"><span class="intruder-stat-label">Injuries p/matar:</span><span class="intruder-stat-value" style="color:#aaaa55">Variable (1 carta)</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Evoluciona a:</span><span class="intruder-stat-value">Breeder</span></div>
+        Token Creeper en el bag evoluciona a Breeder. Resuelve muerte igual que Adult.</div>
+    </div>
+    <div class="intruder-card">
+      <div class="intruder-head"><span class="intruder-icon">👾</span><div><div class="intruder-name">Adult Intruder</div></div></div>
+      <div class="intruder-info">
+        <div class="intruder-stat"><span class="intruder-stat-label">Injuries p/matar:</span><span class="intruder-stat-value" style="color:#aaaa55">Variable (1 carta)</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Evoluciona de:</span><span class="intruder-stat-value">Larva (token)</span></div>
+        El más común. Roba 1 carta de Ataque, compara el número de sangre con los injuries acumulados.</div>
+    </div>
+    <div class="intruder-card">
+      <div class="intruder-head"><span class="intruder-icon">🐉</span><div><div class="intruder-name">Breeder</div></div></div>
+      <div class="intruder-info">
+        <div class="intruder-stat"><span class="intruder-stat-label">Injuries p/matar:</span><span class="intruder-stat-value" style="color:#cc6644">Variable (2 cartas)</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Evoluciona de:</span><span class="intruder-stat-value">Creeper (token)</span></div>
+        Roba 2 cartas de Ataque para chequear muerte (suma los valores de sangre).</div>
+    </div>
+    <div class="intruder-card">
+      <div class="intruder-head"><span class="intruder-icon">👑</span><div><div class="intruder-name">Queen</div></div></div>
+      <div class="intruder-info">
+        <div class="intruder-stat"><span class="intruder-stat-label">Injuries p/matar:</span><span class="intruder-stat-value" style="color:#cc6644">Variable (2 cartas)</span></div>
+        <div class="intruder-stat"><span class="intruder-stat-label">Aparece en:</span><span class="intruder-stat-value">El Nido (The Nest)</span></div>
+        Solo aparece en el Nido cuando hay personajes ahí. Si no → añade 1 Egg al Intruder board. Roba 2 cartas para chequear muerte.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Muerte de un Intruder</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title">💀 Chequeo de muerte tras recibir Injuries</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Tras recibir Injuries, coloca markers en la base del Intruder.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Larva/Egg:</strong> 1 Injury = muerto. Quita la miniatura.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Creeper/Adult:</strong> Roba 1 carta de Intruder Attack. Ignora todo excepto el icono de sangre (esquina superior izq.). Si el número ≤ injuries acumulados → muerto. Si no → sigue vivo.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Breeder/Queen:</strong> Roba 2 cartas. Suma ambos valores de sangre. Compara la suma con injuries acumulados.</div></div>
+    </div>
+    <div class="tip">💡 Al matar un Intruder, coloca 1 token de Carcasa en esa habitación — es un Objeto que puedes llevar al Lab para investigar Weaknesses.</div>
+    <div class="section-title">Retreat (Retirada):</div>
+    <div class="desc">Si alguna de las cartas de Intruder Attack robadas tiene la flecha de Retreat → el Intruder huye. Roba 1 carta de Evento y muévelo por el corredor del número indicado.</div>
+  </div></div>
+
+  <div class="section-title">Intruder Bag Development (paso 8 de Fase de Evento)</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title">🎲 Qué pasa al sacar cada token del bag</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <table>
+      <tr><th>Token</th><th>Efecto</th></tr>
+      <tr><td>🐛 <strong>Larva</strong></td><td>Elimina este token del bag. Añade 1 token Adult al bag.</td></tr>
+      <tr><td>🦎 <strong>Creeper</strong></td><td>Elimina este token del bag. Añade 1 token Breeder al bag.</td></tr>
+      <tr><td>👾 <strong>Adult</strong></td><td>Todos los jugadores hacen Noise Roll en orden. Regresa el token al bag.</td></tr>
+      <tr><td>🐉 <strong>Breeder</strong></td><td>Todos los jugadores hacen Noise Roll en orden. Regresa el token al bag.</td></tr>
+      <tr><td>👑 <strong>Queen</strong></td><td>Si hay personajes en el Nido → coloca la Reina y resuelve Encounter. Si no → añade 1 Egg al Intruder board. Regresa al bag.</td></tr>
+      <tr><td>⬜ <strong>Blank</strong></td><td>Añade 1 Adult al bag (si hay disponibles). Regresa el Blank al bag.</td></tr>
+    </table>
+    <div class="warning">⚠️ Los jugadores en combate con un Intruder no hacen Noise Roll cuando se saca Adult/Breeder.</div>
+  </div></div>
+</div>
+
+<!-- ===== TOKENS ===== -->
+<div id="tab-tokens" class="tab-panel">
+  <div class="section-title">Tokens de habitación y corredor</div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#1a3a5a">RUIDO</span>
+    <span class="card-title" style="color:#7faacc">📡 Noise Marker</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Marca corredores con actividad sonora. Máx. 1 por corredor. Si debes colocar uno donde ya hay → Encounter.</div>
+    <div class="tip">💡 Los Encounters descartan TODOS los Noise markers de los corredores conectados a esa habitación.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#5a1a00">FUEGO</span>
+    <span class="card-title" style="color:#cc6644">🔥 Fire Marker</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-pill-label">Personajes</div><div class="stat-pill-value" style="color:#cc6644">1 Light Wound/ronda</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Intruders</div><div class="stat-pill-value" style="color:#aaaa55">1 Injury/Evento</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Máx en juego</div><div class="stat-pill-value" style="color:#cc6644">8 (9 = boom)</div></div>
+    </div>
+    <div class="warning">💣 Si debes colocar el 9° Fire marker → el barco explota. Fin de juego. Todos mueren.</div>
+    <div class="desc">Los personajes sufren 1 Light Wound al TERMINAR su ronda en una habitación con fuego. Una habitación no puede tener más de 1 Fire marker.</div>
+    <div class="tip">💡 Puedes usar la Room Action de habitaciones relevantes (y ciertos items) para apagar el fuego.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#2a2a4a">FALLO</span>
+    <span class="card-title" style="color:#8888cc">⚙️ Malfunction Marker</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="stat-pill-label">Room Action</div><div class="stat-pill-value" style="color:#cc6644">❌ Bloqueada</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Search</div><div class="stat-pill-value" style="color:#55aa66">✅ Funciona</div></div>
+      <div class="stat-pill"><div class="stat-pill-label">Máx en juego</div><div class="stat-pill-value" style="color:#cc6644">8 (9 = boom)</div></div>
+    </div>
+    <div class="warning">💣 Si debes colocar el 9° Malfunction marker → el barco pierde integridad. Todos mueren.</div>
+    <div class="desc">Bloquea la acción especial de la habitación. NO afecta el Search. Puede disablear habitaciones especiales (Hibernatorium, Motores, Cockpit).</div>
+    <div class="info">📌 No puede colocarse en el Nido ni en habitaciones cubiertas de Slime. Un Malfunction en el Engine Room NO cambia el estado del motor (solo bloquea su acción).</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#1a4a2a">SLIME</span>
+    <span class="card-title" style="color:#55aa66">💚 Slime Marker</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Se coloca en tu Character board. Mientras lo tengas, cada resultado de "Silence" en tu Noise Roll se trata como "Danger" en su lugar.</div>
+    <div class="desc">Solo puedes tener 1 Slime marker a la vez. Se elimina usando la carta de Item Clothes o la Room Action de la Ducha (Shower).</div>
+    <div class="warning">⚠️ Con Slime, nunca obtienes el resultado seguro de Silence — siempre activas algo.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-badge" style="background:#3a3a1a">PUERTA</span>
+    <span class="card-title" style="color:#aaaa55">🚪 Door Token</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <table>
+      <tr><th>Estado</th><th>Representación</th><th>Efecto</th></tr>
+      <tr><td class="result-bad"><strong>Cerrada</strong></td><td>Token de pie en corredor</td><td>Bloquea movimiento de personajes e Intruders. Cuando un Intruder intenta pasar → destruye la puerta en lugar de moverse.</td></tr>
+      <tr><td class="result-mid"><strong>Destruida</strong></td><td>Token tirado</td><td>Movimiento libre. No puede volver a cerrarse (excepto con Plasma Torch del Mechanic).</td></tr>
+      <tr><td class="result-good"><strong>Abierta</strong></td><td>Sin token</td><td>Movimiento libre. Estado inicial de todas las puertas.</td></tr>
+    </table>
+    <div class="info">📌 Los Noise markers NO son afectados por las puertas. Un corredor con puerta cerrada puede tener Noise marker.</div>
+  </div></div>
+
+  <div class="section-title">Tokens de exploración</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title">🗺️ Exploration Token — efectos posibles</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Al entrar a una habitación inexplorada, das vuelta el tile Y revelas el token de exploración. Su número indica cuántos items hay en la habitación.</div>
+    <table>
+      <tr><th>Símbolo</th><th>Efecto</th></tr>
+      <tr><td class="result-good"><strong>🔇 Silence</strong></td><td>Nada. No hay Noise roll. (Si tienes Slime → trata como Danger)</td></tr>
+      <tr><td class="result-bad"><strong>⚠️ Danger</strong></td><td>No hay Noise roll. Si hay Intruder en habitación vecina sin combate → se mueve aquí. Si no → Noise markers en todos los corredores.</td></tr>
+      <tr><td><strong>💚 Slime</strong></td><td>Coloca Slime marker en tu Character board.</td></tr>
+      <tr><td><strong>🔥 Fire</strong></td><td>Coloca Fire marker en esta habitación.</td></tr>
+      <tr><td><strong>⚙️ Malfunction</strong></td><td>Coloca Malfunction marker en esta habitación.</td></tr>
+      <tr><td><strong>🚪 Doors</strong></td><td>Coloca un Door token en el corredor por el que entraste.</td></tr>
+    </table>
+    <div class="info">📌 Los tokens de exploración se usan solo una vez — se quitan del juego después de revelarse.</div>
+  </div></div>
+</div>
+
+<!-- ===== HERIDAS ===== -->
+<div id="tab-wounds" class="tab-panel">
+  <div class="section-title">Tipos de heridas</div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-title" style="color:#aaaa55">🟡 Light Wound</span>
+        <span class="card-chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="desc">Coloca un Wound marker en el track de Light Wounds del Character board.</div>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Primera herida → marker en espacio superior.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Segunda herida → mueve el marker al espacio inferior (2 Light Wounds).</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Tercera herida (cuando el marker ya está abajo) → descarta el marker y el personaje sufre 1 <strong>Serious Wound</strong>.</div></div>
+        </div>
+        <div class="desc">Se pueden curar con ciertos items (Bandages, Medkit) o Room Actions (Emergency Room).</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-title" style="color:#cc6644">🔴 Serious Wound</span>
+        <span class="card-chevron">▼</span>
+      </div>
+      <div class="card-body">
+        <div class="desc">Roba 1 carta de Serious Wound y colócala junto a tu Character board. Su efecto aplica permanentemente.</div>
+        <div class="warning">⚠️ Con 3 Serious Wounds, cualquier herida adicional (Light o Serious) = muerte instantánea.</div>
+        <div class="section-title">Dress vs Heal:</div>
+        <div class="desc"><strong>Dress:</strong> Voltea la carta boca abajo. Su efecto se ignora pero sigue contando para el límite de 3.<br><strong>Heal:</strong> Descarta la carta (debe estar Dressed primero).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Muerte del personaje</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#cc4444">☠️ ¿Qué pasa cuando mueres?</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Retira tu miniatura del tablero.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Coloca 1 token de Character Corpse en la habitación donde moriste.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Todos los Objetos Pesados que cargabas se quedan en esa habitación.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Si eres el <strong>primer personaje en morir</strong> → todos los Escape Pods se desbloquean automáticamente.</div></div>
+    </div>
+    <div class="tip">💡 Tu cadáver es un Objeto Pesado que puede llevarse al Lab para investigar Weaknesses.</div>
+  </div></div>
+
+  <div class="section-title">Contaminación</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#55aa66">☣️ Cartas de Contaminación</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Se van al descarte cuando las recibes. Se mezclan con tu mazo de Acción y eventualmente llegarán a tu mano. NO sirven para pagar costos de acciones y ocupan espacio en la mano.</div>
+    <div class="warning">⚠️ Cada carta puede estar o no INFECTED — no lo sabes hasta escanearla.</div>
+    <div class="section-title">Escanear una carta de Contaminación:</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Usa el Scanner (lámina roja) sobre el campo codificado de la carta.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Si aparece <strong>INFECTED</strong> → coloca miniatura de Larva en tu Character board + conserva la carta.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Si ya tienes una Larva en tu board y la escaneas como INFECTED → tu personaje <strong>muere</strong>. Aparece 1 Creeper donde murió.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Si NO está infectada → sigue las instrucciones del item/acción que ordenó el escaneo (generalmente se descarta).</div></div>
+    </div>
+    <div class="tip">💡 Escanea tus cartas antes del fin de juego. Si al final tienes 1+ INFECTED entre tus cartas → barajas todo y robas 4. Si hay cualquier Contamination card → mueres.</div>
+  </div></div>
+</div>
+
+<!-- ===== OBJETIVOS ===== -->
+<div id="tab-objectives" class="tab-panel">
+  <div class="info">🎯 Recibes 2 cartas de objetivo al inicio (1 corporativo, 1 personal). Cuando el primer Intruder aparece, eliges 1 y descartas el otro boca abajo. Nadie más debe saber cuál elegiste.</div>
+  <div class="warning">⚠️ Para ganar: DEBES completar tu objetivo Y sobrevivir (hibernar o usar Escape Pod).</div>
+
+  <div class="section-title">Tipos de objetivos comunes</div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#7faacc">📡 Enviar la Señal</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Ve al Comms Room y usa su Room Action. El Comms Room siempre está en el barco (busca los tiles con número "1" en la parte de atrás).</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#7faacc">🌍 El barco debe llegar a la Tierra/Marte</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">El barco llegará a su destino si las Coordenadas correctas están configuradas en el Cockpit Y al menos 2 de los 3 motores están funcionando (estado Working).</div>
+    <div class="tip">💡 Ve al Cockpit para cambiar coordenadas. Revisa los motores con la acción correspondiente.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#7faacc">🔬 Descubrir una Weakness</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Lleva un Objeto (Carcasa de Intruder, Cadáver, o Huevo) al Laboratorio y usa su Room Action. Al final del juego, que ALGUIEN haya investigado es suficiente.</div>
+    <div class="tip">💡 El Lab siempre está en el barco (tiles con número "1").</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#7faacc">🪺 Destruir el Nido</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">El Nido se destruye cuando no quedan huevos en él. Recóge o destruye todos los huevos. El Nido siempre está en el barco (tiles con número "1").</div>
+    <div class="warning">⚠️ Ten cuidado con la Queen — aparece en el Nido si hay personajes ahí.</div>
+  </div></div>
+
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#cc6644">☠️ Objetivos de eliminación</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="desc">Algunos objetivos requieren que el personaje de otro jugador NO sobreviva. No necesitas matarlo directamente — solo asegurarte de que esté muerto al final.</div>
+    <div class="tip">💡 Puedes dejar trampas: cerrar puertas, no ayudar en combate, escapar dejando a alguien atrás...</div>
+    <div class="warning">⚠️ Recuerda: aun con objetivos hostiles, necesitas TÚ sobrevivir también.</div>
+  </div></div>
+
+  <div class="section-title">Escape Pod y Hibernación</div>
+  <div class="card"><div class="card-header" onclick="toggleCard(this)">
+    <span class="card-title" style="color:#55aa66">🚀 Cómo escapar del barco</span>
+    <span class="card-chevron">▼</span>
+  </div><div class="card-body">
+    <div class="grid2">
+      <div>
+        <div class="section-title">Escape Pod</div>
+        <div class="desc">Inicialmente bloqueados. Se desbloquean cuando el primer personaje muere, o con Room Actions específicas. Al usarlo, abandonas el barco — ya no puedes actuar.</div>
+      </div>
+      <div>
+        <div class="section-title">Hibernation</div>
+        <div class="desc">El Hibernatorium se abre cuando el Time Track llega a cualquier espacio azul. Solo entonces puedes hibernar. Un personaje hibernado no puede actuar más.</div>
+      </div>
+    </div>
+    <div class="warning">⚠️ Si hibernas o usas un Escape Pod, dejas de jugar activamente. Ganar depende de que el barco llegue a la Tierra con motores funcionando.</div>
+  </div></div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+const phaseData=[
+  {
+    label:"Fase de Jugadores",color:"#2a6080",
+    steps:[
+      {title:"1. Robar cartas de Acción",desc:"Todos los jugadores roban hasta tener 5 cartas en mano. Si el mazo está vacío, mezcla el descarte y forma uno nuevo."},
+      {title:"2. Pasar el token de Primer Jugador",desc:"El jugador con el token lo pasa al jugador de su izquierda. (No se pasa en el primer turno del juego.)"},
+      {title:"3. Rondas de 2 acciones",desc:"Empezando por el Primer Jugador en sentido horario, cada jugador realiza 2 acciones. Luego el siguiente. Esto continúa en rondas hasta que TODOS los jugadores hayan pasado.",
+       sub:"• Si solo realizas 1 acción → debes pasar.\n• Una vez que pasas → no puedes hacer más acciones este turno.\n• Al pasar puedes descartar cartas de tu mano.\n• Al terminar tu ronda en una habitación con fuego → sufres 1 Light Wound."},
+    ],
+    note:"La Fase de Jugadores termina cuando todos han pasado."
+  },
+  {
+    label:"Fase de Evento",color:"#6a2020",
+    steps:[
+      {title:"4. Time Track",desc:"Mueve el Time marker 1 espacio a la derecha. Si el Self-Destruct está activo, mueve también su marker 1 espacio."},
+      {title:"5. Intruder Attack",desc:"Cada Intruder en combate con un personaje lo ataca. Resuelve los ataques en orden."},
+      {title:"6. Fire Damage",desc:"Cada Intruder en una habitación con Fire marker sufre 1 Injury."},
+      {title:"7. Resolver carta de Evento",desc:"Roba 1 carta del mazo de Eventos y resuélvela:\n1) Movimiento de Intruders: mueve los Intruders del tipo mostrado a través del corredor indicado (solo si NO están en combate).\n2) Efecto del evento: resuelve el texto de la carta."},
+      {title:"8. Intruder Bag Development",desc:"Saca 1 token del Intruder bag y resuelve su efecto. Ver tab Intruders para cada token."},
+    ],
+    note:"Tras resolver todos los pasos (incluidos todos los Encounters y Surprise Attacks derivados), comienza el siguiente turno."
+  }
+];
+
+let curPhase=null;
+function selectPhase(i){
+  if(curPhase===i){curPhase=null;}else{curPhase=i;}
+  document.querySelectorAll('.flow-item').forEach((el,idx)=>{
+    el.classList.toggle('active',idx===curPhase);
+  });
+  const det=document.getElementById('phase-detail');
+  if(curPhase===null){det.classList.remove('visible');return;}
+  const p=phaseData[curPhase];
+  let html='<div style="color:'+p.color+';font-size:10px;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px">'+p.label+'</div>';
+  p.steps.forEach(s=>{
+    html+='<div style="margin-bottom:10px">';
+    html+='<div style="font-size:13px;color:#aabbc0;font-weight:bold;margin-bottom:4px">'+s.title+'</div>';
+    html+='<div style="font-size:12px;color:#667788;line-height:1.7;white-space:pre-line">'+s.desc+'</div>';
+    if(s.sub) html+='<div style="font-size:11px;color:#556677;line-height:1.6;margin-top:4px;padding-left:10px;border-left:2px solid #1a2530;white-space:pre-line">'+s.sub+'</div>';
+    html+='</div>';
+  });
+  html+='<div style="font-size:11px;color:#2a6080;font-style:italic;border-top:1px solid #1a2530;padding-top:8px;margin-top:4px">'+p.note+'</div>';
+  det.innerHTML=html;
+  det.classList.add('visible');
+}
+
+function toggleCard(header){
+  header.parentElement.classList.toggle('open');
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

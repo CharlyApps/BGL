@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7 Wonders Architects — Guía Rápida</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#0a0810;color:#e0d8f0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    min-height:100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%,#120a1e 0%,transparent 55%),
+      radial-gradient(ellipse at 85% 85%,#0e1208 0%,transparent 50%);
+  }
+  header{border-bottom:2px solid #2a1850;padding:14px 16px 12px;
+    background:linear-gradient(180deg,#0d0818 0%,#0a0810 100%);
+    display:flex;align-items:center;gap:12px}
+  .back-btn{color:#7755cc;font-size:12px;text-decoration:none;border:1px solid #2a1850;padding:4px 10px;border-radius:4px;font-family:monospace;letter-spacing:1px;transition:all 0.15s;flex-shrink:0}
+  .back-btn:hover{background:#140a28;color:#aa88ff}
+  .sub{font-size:9px;letter-spacing:4px;color:#3a2060;text-transform:uppercase;font-family:monospace}
+  .main-title{font-size:20px;font-weight:bold;color:#c8a0ff;letter-spacing:1px}
+  .tagline{font-size:10px;color:#3a3050;letter-spacing:1px;margin-top:2px}
+
+  .nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #120a20;background:#080610;overflow-x:auto}
+  .nav-btn{background:transparent;border:1px solid #1e1030;color:#554488;padding:6px 12px;cursor:pointer;font-size:10px;border-radius:2px;white-space:nowrap;text-transform:uppercase;letter-spacing:1px;font-family:monospace;transition:all 0.15s}
+  .nav-btn.active{background:#1e0e3a;border-color:#7755cc;color:#c8a0ff}
+
+  .container{padding:14px 16px;max-width:720px;margin:0 auto}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  .sec{font-size:9px;letter-spacing:3px;color:#3a2060;text-transform:uppercase;margin-bottom:8px;margin-top:16px;border-bottom:1px solid #120a20;padding-bottom:4px}
+  .sec:first-child{margin-top:0}
+
+  .card{background:#0c0818;border:1px solid #1e1030;border-radius:4px;overflow:hidden;margin-bottom:8px}
+  .card-hd{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;transition:background 0.15s}
+  .card-hd:hover{background:#140a24}
+  .ct{font-size:13px;font-weight:bold;flex:1}
+  .cc{color:#2a1840;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .card.open .cc{transform:rotate(180deg)}
+  .card-body{display:none;border-top:1px solid #120a20;padding:12px 14px}
+  .card.open .card-body{display:block}
+
+  .desc{font-size:12px;color:#887aa8;line-height:1.7;margin-bottom:8px}
+  .step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+  .sn{background:#1a0a30;border:1px solid #4a2888;color:#c8a0ff;font-size:10px;font-weight:bold;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:monospace}
+  .st{font-size:12px;color:#887aa8;line-height:1.6}
+  .tip{background:#0a100a;border:1px solid #1a3a10;border-radius:3px;padding:8px 12px;font-size:11px;color:#55aa44;margin:6px 0;line-height:1.6}
+  .warn{background:#140808;border:1px solid #4a1a10;border-radius:3px;padding:8px 12px;font-size:11px;color:#cc5533;margin:6px 0;line-height:1.6}
+  .info{background:#080e18;border:1px solid #1a2a50;border-radius:3px;padding:8px 12px;font-size:11px;color:#5588cc;margin:6px 0;line-height:1.6}
+
+  table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+  th{background:#120a20;color:#7755cc;padding:7px 10px;text-align:left;border:1px solid #1e1030;font-family:monospace;letter-spacing:1px;font-size:9px;text-transform:uppercase}
+  td{padding:7px 10px;border:1px solid #120a20;color:#887aa8;vertical-align:top;line-height:1.5}
+  tr:nth-child(even) td{background:#0c0818}
+
+  /* CARD TYPE PILLS */
+  .card-types{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .card-type{border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color 0.15s}
+  .card-type:hover{filter:brightness(1.1)}
+  .card-type.open .type-body{display:block}
+  .type-hd{display:flex;align-items:center;gap:8px;padding:10px 12px}
+  .type-icon{font-size:22px;flex-shrink:0}
+  .type-name{font-size:12px;font-weight:bold;flex:1}
+  .type-chev{font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .card-type.open .type-chev{transform:rotate(180deg)}
+  .type-body{display:none;padding:9px 12px;border-top:1px solid rgba(255,255,255,0.08);font-size:11px;line-height:1.7}
+
+  /* WONDER CARDS */
+  .wonder-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+  .wonder-card{background:#0c0818;border:1px solid #1e1030;border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color 0.15s}
+  .wonder-card:hover{border-color:#4a2888}
+  .wonder-card.open{border-color:#7755cc}
+  .w-hd{display:flex;align-items:center;gap:8px;padding:9px 12px}
+  .w-icon{font-size:20px;flex-shrink:0}
+  .w-name{font-size:13px;font-weight:bold;color:#c8a0ff;flex:1}
+  .w-chev{color:#2a1840;font-size:11px;transition:transform 0.2s}
+  .wonder-card.open .w-chev{transform:rotate(180deg)}
+  .w-body{display:none;border-top:1px solid #120a20;padding:9px 12px;font-size:11px;color:#887aa8;line-height:1.7}
+  .wonder-card.open .w-body{display:block}
+  .w-stage{display:flex;justify-content:space-between;margin-bottom:3px;padding:3px 0;border-bottom:1px solid #160e28}
+  .w-stage-label{color:#7755cc;font-size:10px;font-family:monospace}
+  .w-stage-effect{font-size:10px;color:#666088;text-align:right}
+
+  /* PROGRESS TOKEN GRID */
+  .token-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+  .token-card{background:#0c0818;border:1px solid #1e1030;border-radius:4px;padding:10px 12px}
+  .token-name{font-size:11px;font-weight:bold;color:#c8a0ff;margin-bottom:4px}
+  .token-desc{font-size:11px;color:#666088;line-height:1.6}
+
+  /* CONFLICT TRACKER */
+  .conflict-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+  .conflict-pill{background:#1a0a10;border:1px solid #4a1020;color:#cc4444;font-size:10px;padding:4px 10px;border-radius:12px;font-family:monospace}
+  .conflict-arrow{color:#3a2050;font-size:16px}
+
+  footer{margin-top:14px;padding-top:10px;border-top:1px solid #120a20;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+  footer span{font-size:9px;color:#1e1030;font-family:monospace}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">← Biblioteca</a>
+  <div>
+    <div class="sub">Guía de referencia</div>
+    <div class="main-title">🏛️ 7 WONDERS ARCHITECTS</div>
+    <div class="tagline">2–7 jugadores · 25–30 min · Construcción de civilización</div>
+  </div>
+</header>
+
+<div class="nav">
+  <button class="nav-btn active" id="navbtn-resumen" onclick="switchTab('resumen',this)">📋 Resumen</button>
+  <button class="nav-btn" id="navbtn-turno" onclick="switchTab('turno',this)">🎯 Tu Turno</button>
+  <button class="nav-btn" id="navbtn-cartas" onclick="switchTab('cartas',this)">🃏 Cartas</button>
+  <button class="nav-btn" id="navbtn-wonder" onclick="switchTab('wonder',this)">🏗️ Maravilla</button>
+  <button class="nav-btn" id="navbtn-batalla" onclick="switchTab('batalla',this)">⚔️ Batallas</button>
+  <button class="nav-btn" id="navbtn-tokens" onclick="switchTab('tokens',this)">🔬 Progreso</button>
+  <button class="nav-btn" id="navbtn-maravillas" onclick="switchTab('maravillas',this)">🌍 Maravillas</button>
+  <button class="nav-btn" id="navbtn-setup" onclick="switchTab('setup',this)">🎲 Setup</button>
+</div>
+
+<div class="container">
+
+<!-- ===== RESUMEN ===== -->
+<div id="tab-resumen" class="tab-panel active">
+  <div class="sec">¿De qué va?</div>
+  <div class="desc">Cada jugador construye una de las 7 Maravillas del mundo antiguo recogiendo recursos y cartas de 3 fuentes. La partida termina en cuanto alguien completa su Maravilla — gana quien tenga más Puntos de Victoria al final.</div>
+
+  <div class="sec">Flujo de una partida en 30 segundos</div>
+  <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+    <div style="background:#0c0818;border:1px solid #1e1030;border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">🃏</span>
+      <div><div style="font-size:12px;color:#c8a0ff;font-weight:bold;margin-bottom:2px">Toma 1 carta de 3 opciones</div><div style="font-size:11px;color:#665588">Mazo izquierda · Mazo derecha · Mazo central</div></div>
+    </div>
+    <div style="background:#0c0818;border:1px solid #1e1030;border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">⚡</span>
+      <div><div style="font-size:12px;color:#c8a0ff;font-weight:bold;margin-bottom:2px">Aplica los efectos de tus cartas</div><div style="font-size:11px;color:#665588">En cualquier orden: construir, tomar progreso, activar batallas...</div></div>
+    </div>
+    <div style="background:#0c0818;border:1px solid #1e1030;border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">➡️</span>
+      <div><div style="font-size:12px;color:#c8a0ff;font-weight:bold;margin-bottom:2px">Pasa el turno al jugador de la izquierda</div><div style="font-size:11px;color:#665588">Sin fases ni rondas — ¡turno a turno hasta que alguien termina su Maravilla!</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Puntuación final</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">🏆 ¿Qué cuenta al final?</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <table>
+        <tr><th>Fuente</th><th>Puntos</th></tr>
+        <tr><td>🏛️ Etapas construidas de tu Maravilla</td><td>Los indicados en cada etapa</td></tr>
+        <tr><td>🔵 Cartas Azules</td><td>Los PV impresos en cada carta</td></tr>
+        <tr><td>⚔️ Tokens de Victoria Militar</td><td>1 PV cada uno</td></tr>
+        <tr><td>🔬 Tokens de Progreso</td><td>Varía según el token</td></tr>
+        <tr><td>🐱 El Peón Gato (si lo tienes)</td><td>2 PV</td></tr>
+      </table>
+      <div class="warn">⚠️ Las cartas Grises, Amarillas y Rojas en sí mismas NO dan PV — su valor está en lo que hacen durante la partida.</div>
+      <div class="info">🤝 En caso de empate → gana quien haya construido más Etapas de su Maravilla. Si sigue igual, ambos comparten la victoria.</div>
+    </div>
+  </div>
+
+  <div class="sec">El Peón Gato 🐱</div>
+  <div class="desc">Un elemento especial que pasa entre jugadores. Al inicio de tu turno, si tienes el Peón Gato, puedes mirar en secreto la carta superior del mazo central antes de elegir qué carta tomar. Vale <strong style="color:#c8a0ff">2 PV</strong> al final.</div>
+  <div class="tip">💡 El Gato te da información privilegiada — úsalo para decidir si conviene tomar del mazo central o de los mazos de tus vecinos.</div>
+
+  <footer><span>FIN: EN CUANTO ALGUIEN TERMINA SU MARAVILLA</span><span>GANA: MÁS PUNTOS DE VICTORIA</span></footer>
+</div>
+
+<!-- ===== TURNO ===== -->
+<div id="tab-turno" class="tab-panel">
+  <div class="sec">En tu turno — paso a paso</div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">1. Usa el Peón Gato (si lo tienes)</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Al <strong>inicio</strong> de tu turno, si tienes el Peón Gato puedes mirar en secreto la carta superior del mazo central. Luego decides qué carta tomar.</div>
+    </div>
+  </div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">2. Toma 1 carta de 3 opciones</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="step"><div class="sn">A</div><div class="st"><strong style="color:#c8a0ff">Mazo de tu izquierda</strong> — la carta superior del mazo de tu vecino izquierdo.</div></div>
+      <div class="step"><div class="sn">B</div><div class="st"><strong style="color:#c8a0ff">Mazo de tu derecha</strong> — la carta superior del mazo de tu vecino derecho.</div></div>
+      <div class="step"><div class="sn">C</div><div class="st"><strong style="color:#c8a0ff">Mazo central</strong> — la carta superior del mazo común (boca abajo, no la ves antes de tomarla, salvo con el Gato).</div></div>
+      <div class="info">📌 Si un mazo está vacío, esa opción no está disponible. Los mazos no se reponen.</div>
+      <div class="desc" style="margin-top:8px">Coloca la carta elegida frente a ti, agrupada con las demás del mismo color.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">3. Aplica los efectos en cualquier orden</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Tras tomar tu carta, ejecuta todas las acciones disponibles en el orden que quieras. Algunos efectos son <strong style="color:#cc5533">obligatorios</strong> si se cumplen las condiciones.</div>
+      <table>
+        <tr><th>Si tienes...</th><th>Acción</th><th>¿Obligatorio?</th></tr>
+        <tr><td>⬜ Recursos suficientes (Grises + Amarillas)</td><td>Construir etapa de tu Maravilla</td><td style="color:#cc5533">✅ SÍ</td></tr>
+        <tr><td>🔬 2 iguales o 3 diferentes símbolos de ciencia</td><td>Tomar un Token de Progreso</td><td style="color:#cc5533">✅ SÍ</td></tr>
+        <tr><td>🔴 Carta Roja con ⚔️ icono</td><td>Voltear token(s) de Conflicto</td><td style="color:#cc5533">✅ SÍ</td></tr>
+        <tr><td>🔵 Carta Azul con 🐱 icono</td><td>Tomar el Peón Gato</td><td style="color:#cc5533">✅ SÍ</td></tr>
+        <tr><td>🔬 Tokens de Progreso en mano</td><td>Activar sus efectos</td><td style="color:#55aa44">Opcional</td></tr>
+      </table>
+      <div class="warn">⚠️ Si se activa una Batalla (último token de Conflicto volteado), se resuelve al FINAL de tu turno, después de todos los demás efectos.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">4. Fin de tu turno</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Cuando ya no puedes tomar más acciones, tu turno termina. El jugador a tu <strong style="color:#c8a0ff">izquierda</strong> comienza su turno.</div>
+      <div class="tip">💡 No hay límite de cartas en mano. Acumulas todas tus cartas frente a ti, apiladas por color con el banner visible.</div>
+    </div>
+  </div>
+
+  <footer><span>TURNO: Gato → Toma carta → Aplica efectos → Fin</span><span>SIN RONDAS — TURNO A TURNO DIRECTO</span></footer>
+</div>
+
+<!-- ===== CARTAS ===== -->
+<div id="tab-cartas" class="tab-panel">
+  <div class="sec">Los 5 tipos de cartas</div>
+
+  <div class="card-types">
+    <div class="card-type" style="border:1px solid #4a4a4a;background:#0e0e0e" onclick="toggleType(this)">
+      <div class="type-hd" style="background:#111111">
+        <span class="type-icon">⬜</span>
+        <div><div class="type-name" style="color:#cccccc">GRIS</div><div style="font-size:9px;color:#555">Recursos</div></div>
+        <span class="type-chev" style="color:#444">▼</span>
+      </div>
+      <div class="type-body" style="color:#888;background:#0e0e0e">
+        Proporcionan <strong style="color:#ccc">Recursos</strong> para construir tu Maravilla.<br><br>
+        <strong>Regla clave:</strong> Si en cualquier momento tienes los recursos necesarios para construir la siguiente etapa disponible de tu Maravilla, <strong style="color:#cc5533">DEBES construirla inmediatamente</strong> (descarta las cartas grises y amarillas usadas y voltea la etapa).<br><br>
+        <div style="background:#1a1a1a;border:1px solid #333;border-radius:3px;padding:6px;margin-top:6px;font-size:10px">
+          Los recursos de las cartas Grises son permanentes hasta que los gastas en construcción.
+        </div>
+      </div>
+    </div>
+
+    <div class="card-type" style="border:1px solid #4a3a08;background:#100e06" onclick="toggleType(this)">
+      <div class="type-hd" style="background:#141008">
+        <span class="type-icon">🟡</span>
+        <div><div class="type-name" style="color:#e8c84a">AMARILLO</div><div style="font-size:9px;color:#5a4a18">Monedas / Comodín</div></div>
+        <span class="type-chev" style="color:#3a2a08">▼</span>
+      </div>
+      <div class="type-body" style="color:#998844;background:#100e06">
+        Cada carta Amarilla es una <strong style="color:#e8c84a">Moneda = 1 recurso comodín</strong>.<br><br>
+        Las Monedas pueden reemplazar <strong>cualquier recurso que te falte</strong> al construir una etapa. No pueden usarse como recursos extra — solo cubren lo que no tienes en cartas Grises.<br><br>
+        <div style="background:#1a1808;border:1px solid #3a2a08;border-radius:3px;padding:6px;margin-top:6px;font-size:10px;color:#776633">
+          Token de Progreso Economy: una de tus cartas Amarillas vale 2 Monedas en lugar de 1.
+        </div>
+      </div>
+    </div>
+
+    <div class="card-type" style="border:1px solid #4a1010;background:#100808" onclick="toggleType(this)">
+      <div class="type-hd" style="background:#140808">
+        <span class="type-icon">🔴</span>
+        <div><div class="type-name" style="color:#ee5533">ROJA</div><div style="font-size:9px;color:#5a2218">Escudos / Conflicto</div></div>
+        <span class="type-chev" style="color:#3a1808">▼</span>
+      </div>
+      <div class="type-body" style="color:#996655;background:#100808">
+        Proporcionan <strong style="color:#ee5533">Escudos</strong> que aumentan tu fuerza militar.<br><br>
+        Algunas cartas Rojas muestran <strong>1 o 2 iconos ⚔️</strong>. Al tomar una, voltea esa cantidad de tokens de Conflicto (de cara de Paz a cara de Batalla).<br><br>
+        Cuando se voltea el <strong>último token de Conflicto disponible</strong>, se desencadena una <strong style="color:#cc4422">Batalla</strong> al final de tu turno. Ver tab ⚔️ Batallas.<br><br>
+        <div style="background:#180808;border:1px solid #4a1010;border-radius:3px;padding:6px;margin-top:6px;font-size:10px;color:#774433">
+          Tras una Batalla, las cartas con ⚔️ se descartan. Las Rojas sin ⚔️ permanecen.
+        </div>
+      </div>
+    </div>
+
+    <div class="card-type" style="border:1px solid #1a4010;background:#080e06" onclick="toggleType(this)">
+      <div class="type-hd" style="background:#0a1208">
+        <span class="type-icon">🟢</span>
+        <div><div class="type-name" style="color:#55cc33">VERDE</div><div style="font-size:9px;color:#2a5a18">Ciencia / Progreso</div></div>
+        <span class="type-chev" style="color:#1a3a08">▼</span>
+      </div>
+      <div class="type-body" style="color:#558844;background:#080e06">
+        Muestran <strong style="color:#55cc33">símbolos científicos</strong>. Si acumulas <strong>2 símbolos idénticos</strong> o <strong>3 símbolos diferentes</strong>, debes inmediatamente tomar un Token de Progreso de las 4 opciones disponibles.<br><br>
+        Los 3 símbolos posibles: Engranaje ⚙️ · Brújula 🧭 · Tableta 📜<br><br>
+        <div style="background:#0a1208;border:1px solid #1a3a10;border-radius:3px;padding:6px;margin-top:6px;font-size:10px;color:#446633">
+          Descarta las cartas verdes usadas al tomar el token. Los tokens de Progreso son permanentes.
+        </div>
+      </div>
+    </div>
+
+    <div class="card-type" style="border:1px solid #1a1a50;background:#080814" onclick="toggleType(this)">
+      <div class="type-hd" style="background:#0a0a18">
+        <span class="type-icon">🔵</span>
+        <div><div class="type-name" style="color:#6688ee">AZUL</div><div style="font-size:9px;color:#2a3068">Puntos de Victoria</div></div>
+        <span class="type-chev" style="color:#1a1840">▼</span>
+      </div>
+      <div class="type-body" style="color:#5566aa;background:#080814">
+        Dan <strong style="color:#6688ee">Puntos de Victoria</strong> directos al final del juego según el valor impreso en cada carta.<br><br>
+        Algunas cartas Azules tienen el icono del <strong>🐱 Gato</strong>. Al tomar una, tomas inmediatamente el Peón Gato (desde donde esté). El Gato vale 2 PV al final y permite espiar el mazo central.<br><br>
+        <div style="background:#0a0a18;border:1px solid #1a1a50;border-radius:3px;padding:6px;margin-top:6px;font-size:10px;color:#3a4488">
+          Token de Progreso Politics: +1 PV al final por cada icono 🐱 en tus cartas Azules.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer><span>GRIS=recursos · AMARILLA=comodín · ROJA=escudos</span><span>VERDE=ciencia · AZUL=PV · GATO=espía</span></footer>
+</div>
+
+<!-- ===== MARAVILLA ===== -->
+<div id="tab-wonder" class="tab-panel">
+  <div class="sec">Construir tu Maravilla</div>
+  <div class="desc">Cada Maravilla tiene <strong style="color:#c8a0ff">5 Etapas</strong> que debes construir de abajo hacia arriba. Cada etapa muestra su costo en recursos y otorga un efecto especial al ser construida.</div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">📐 Costos de construcción</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <table>
+        <tr><th>Símbolo</th><th>Significado</th></tr>
+        <tr><td style="font-size:16px">◈◈</td><td>2 recursos <strong>diferentes</strong></td></tr>
+        <tr><td style="font-size:16px">◉◉</td><td>2 recursos <strong>idénticos</strong></td></tr>
+        <tr><td style="font-size:16px">◈◈◈</td><td>3 recursos <strong>diferentes</strong></td></tr>
+        <tr><td style="font-size:16px">◉◉◉</td><td>3 recursos <strong>idénticos</strong></td></tr>
+        <tr><td style="font-size:16px">◈◈◈◈</td><td>4 recursos <strong>diferentes</strong></td></tr>
+      </table>
+      <div class="info">📌 Las cartas Amarillas (Monedas) pueden cubrir cualquier recurso que te falte, actuando como comodín.</div>
+      <div class="info">📌 Token Engineering: cuando construyes con este token, ignoras la restricción de "idénticos" o "diferentes" — usas los recursos que tengas.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">⚙️ Reglas de construcción</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="step"><div class="sn">1</div><div class="st">Solo puedes construir la etapa más baja disponible (la que está justo encima de las ya construidas).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Si tienes los recursos necesarios, <strong style="color:#cc5533">debes construir</strong> — no es opcional.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Descarta las cartas Grises y Amarillas usadas como pago. Las demás cartas se quedan.</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Voltea la etapa a su lado "Construida" y aplica inmediatamente su efecto especial.</div></div>
+      <div class="step"><div class="sn">5</div><div class="st">Si tienes recursos para construir múltiples etapas en un turno, debes construirlas todas.</div></div>
+      <div class="tip">💡 Token Architecture: cuando construyes una etapa, puedes tomar 1 carta extra de las 3 disponibles.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#c8a0ff">🏁 Final del juego</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">En cuanto un jugador construye su <strong>5ª y última Etapa</strong>, el juego termina inmediatamente al final de ese turno. Todos cuentan sus PV y el de mayor puntuación gana.</div>
+      <div class="warn">⚠️ El juego puede terminar en cualquier turno — presta atención a cuántas etapas faltan a los demás para adaptar tu estrategia.</div>
+    </div>
+  </div>
+
+  <footer><span>5 ETAPAS · DE ABAJO A ARRIBA · CONSTRUCCIÓN OBLIGATORIA</span><span>GAME OVER AL TERMINAR EL TURNO DEL PRIMERO EN COMPLETAR</span></footer>
+</div>
+
+<!-- ===== BATALLA ===== -->
+<div id="tab-batalla" class="tab-panel">
+  <div class="sec">Tokens de Conflicto — cómo funciona el sistema</div>
+
+  <div class="conflict-row">
+    <span class="conflict-pill">☮️ PAZ</span>
+    <span class="conflict-arrow">→ tomar carta roja con ⚔️ →</span>
+    <span class="conflict-pill">⚔️ BATALLA</span>
+    <span class="conflict-arrow">→ último token voltea →</span>
+    <span style="color:#cc4422;font-size:12px;font-weight:bold">¡BATALLA!</span>
+  </div>
+
+  <div class="desc">El número de tokens de Conflicto en juego varía según los jugadores. Empiezan en cara Paz. Cada vez que alguien toma una carta Roja con iconos ⚔️, voltea esa cantidad de tokens. Cuando se voltea el último, se resuelve una Batalla.</div>
+
+  <table>
+    <tr><th>Jugadores</th><th>Tokens de Conflicto</th></tr>
+    <tr><td>2–3 jugadores</td><td>4 tokens</td></tr>
+    <tr><td>4 jugadores</td><td>5 tokens</td></tr>
+    <tr><td>5 jugadores</td><td>5 tokens</td></tr>
+    <tr><td>6–7 jugadores</td><td>6 tokens</td></tr>
+  </table>
+
+  <div class="sec" style="margin-top:14px">Resolución de una Batalla</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#cc5533">⚔️ Pasos de la Batalla</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="step"><div class="sn">1</div><div class="st">Cada jugador cuenta sus <strong>Escudos totales</strong> (cartas Rojas + bonus del token Tactics + bonus de la Maravilla Rhodes).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Compara tus Escudos con tus <strong>2 vecinos</strong> (izquierda y derecha). Por cada vecino al que superes → toma <strong style="color:#e8c84a">1 Token de Victoria Militar</strong>. Puedes ganar 0, 1 o 2 tokens por Batalla.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st"><strong>Regla para 2 jugadores:</strong> si tienes el doble o más de Escudos que tu oponente → toma 2 Tokens de Victoria Militar en lugar de 1.</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Descarta todas las cartas Rojas con iconos ⚔️. Las Rojas sin ⚔️ permanecen (sus Escudos se mantienen).</div></div>
+      <div class="step"><div class="sn">5</div><div class="st">Voltea todos los tokens de Conflicto de vuelta a cara Paz. El ciclo comienza de nuevo.</div></div>
+      <div class="tip">💡 Cada Token de Victoria Militar vale 1 PV al final. El token de Progreso Strategy da +1 PV por cada token militar que tengas.</div>
+      <div class="info">📌 Los empates no dan tokens — necesitas tener <strong>más</strong> escudos que tu vecino, no los mismos.</div>
+    </div>
+  </div>
+
+  <footer><span>BATALLA: TODOS VS SUS 2 VECINOS SIMULTÁNEAMENTE</span><span>TOKEN MILITAR = 1 PV · STRATEGY +1 PV/TOKEN</span></footer>
+</div>
+
+<!-- ===== TOKENS DE PROGRESO ===== -->
+<div id="tab-tokens" class="tab-panel">
+  <div class="sec">Tokens de Progreso disponibles</div>
+  <div class="desc">Se obtienen al acumular símbolos verdes (2 iguales o 3 diferentes). Hay 3 tokens visibles + 1 pila boca abajo. Al tomar uno visible, se repone del tope de la pila. Puedes elegir cualquiera de los 4 disponibles.</div>
+
+  <div class="token-grid">
+    <div class="token-card">
+      <div class="token-name">🏙️ Urbanismo (Urbanism)</div>
+      <div class="token-desc">Cuando tomas una carta Gris, elige 1 carta extra de las 3 disponibles y tómala también.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">🔨 Artesanía (Crafts)</div>
+      <div class="token-desc">Cuando tomas una carta Gris, elige 1 carta extra de las 3 disponibles y tómala también.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">💍 Joyería (Jewellery)</div>
+      <div class="token-desc">Cuando tomas una carta Gris o Amarilla, elige 1 carta extra de las 3 disponibles y tómala.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">🔬 Ciencia (Science)</div>
+      <div class="token-desc">Cuando tomas una carta Verde, elige 1 carta extra de las 3 disponibles y tómala.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">📣 Propaganda</div>
+      <div class="token-desc">Cuando tomas una carta Roja con 1 o 2 iconos ⚔️, elige 1 carta extra de las 3 disponibles.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">🏗️ Arquitectura (Architecture)</div>
+      <div class="token-desc">Cuando construyes una Etapa de tu Maravilla, elige 1 carta extra de las 3 disponibles.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">💰 Economía (Economy)</div>
+      <div class="token-desc">Una de tus cartas Amarillas vale 2 Monedas (comodines) en lugar de 1.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">⚙️ Ingeniería (Engineering)</div>
+      <div class="token-desc">Al construir una etapa, puedes usar cualquier recurso sin respetar la restricción de "idénticos" o "diferentes".</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">🛡️ Tácticas (Tactics)</div>
+      <div class="token-desc">Añade 2 Escudos permanentes a tu total de Escudos en todas las Batallas.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">🎨 Decoración (Decor)</div>
+      <div class="token-desc">Al final del juego: +4 PV si tu Maravilla está incompleta, o +6 PV si está completamente construida.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">🐱 Política (Politics)</div>
+      <div class="token-desc">Al final del juego: +1 PV por cada icono de Gato en tus cartas Azules.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">⚔️ Estrategia (Strategy)</div>
+      <div class="token-desc">Al final del juego: +1 PV por cada Token de Victoria Militar que tengas.</div>
+    </div>
+    <div class="token-card">
+      <div class="token-name">📚 Educación (Education)</div>
+      <div class="token-desc">Al final del juego: +2 PV por cada Token de Progreso que tengas (incluido este).</div>
+    </div>
+    <div class="token-card" style="border-color:#3a1850">
+      <div class="token-name" style="color:#cc88ff">🎭 Cultura (Culture) ×2</div>
+      <div class="token-desc">Hay 2 copias. Al final: +4 PV si tienes 1 token, o <strong style="color:#cc88ff">+12 PV</strong> si tienes ambos. El más poderoso del juego si logras los dos.</div>
+    </div>
+  </div>
+
+  <div class="warn" style="margin-top:8px">⚠️ Cada token puede usarse una sola vez por turno (excepto los que dan PV al final, que no se activan manualmente).</div>
+
+  <footer><span>2 IGUALES o 3 DIFERENTES SÍMBOLOS VERDES = TOMAR TOKEN</span><span>CULTURE ×2 = 12 PV — EL MÁS PODEROSO</span></footer>
+</div>
+
+<!-- ===== MARAVILLAS ===== -->
+<div id="tab-maravillas" class="tab-panel">
+  <div class="sec">Las 7 Maravillas — efecto de etapa especial</div>
+  <div class="desc">Cada Maravilla tiene una etapa especial con efecto único activado al construirla. Las demás etapas solo dan PV. Consulta tu bandeja para el orden y costos exactos.</div>
+
+  <div class="wonder-grid">
+    <div class="wonder-card" onclick="toggleWonder(this)">
+      <div class="w-hd"><span class="w-icon">🔺</span><div class="w-name">Giza</div><span class="w-chev">▼</span></div>
+      <div class="w-body">
+        <div style="font-size:11px;color:#55aa33;margin-bottom:8px">⭐ Sin efecto especial de etapa, pero otorga <strong>más PV en total</strong> que cualquier otra Maravilla.</div>
+        <div class="w-stage"><span class="w-stage-label">Efecto único</span><span class="w-stage-effect">La Maravilla con más PV puro del juego</span></div>
+        <div style="font-size:10px;color:#446644;margin-top:4px">Ideal si prefieres una estrategia directa sin efectos complejos.</div>
+      </div>
+    </div>
+
+    <div class="wonder-card" onclick="toggleWonder(this)">
+      <div class="w-hd"><span class="w-icon">💡</span><div class="w-name">Alexandria</div><span class="w-chev">▼</span></div>
+      <div class="w-body">
+        <div class="w-stage"><span class="w-stage-label">Etapa especial</span><span class="w-stage-effect">Toma la carta superior de CUALQUIER mazo del tablero</span></div>
+        <div style="font-size:10px;color:#446688;margin-top:6px">Máxima flexibilidad — puedes tomar de cualquier mazo, incluso de vecinos lejanos.</div>
+      </div>
+    </div>
+
+    <div class="wonder-card" onclick="toggleWonder(this)">
+      <div class="w-hd"><span class="w-icon">🏺</span><div class="w-name">Ephesus</div><span class="w-chev">▼</span></div>
+      <div class="w-body">
+        <div class="w-stage"><span class="w-stage-label">Etapa especial</span><span class="w-stage-effect">Toma la carta superior de tus mazos IZQUIERDO y DERECHO</span></div>
+        <div style="font-size:10px;color:#446688;margin-top:6px">Tomas 2 cartas a la vez — doble recurso al construir esta etapa.</div>
+      </div>
+    </div>
+
+    <div class="wonder-card" onclick="toggleWonder(this)">
+      <div class="w-hd"><span class="w-icon">🏟️</span><div class="w-name">Olympia</div><span class="w-chev">▼</span></div>
+      <div class="w-body">
+        <div class="w-stage"><span class="w-stage-label">Etapa especial</span><span class="w-stage-effect">+1 Escudo permanente</span></div>
+        <div style="font-size:10px;color:#446688;margin-top:6px">Fuerza militar pasiva — no necesitas cartas Rojas para tener peso en batallas.</div>
+      </div>
+    </div>
+
+    <div class="wonder-card" onclick="toggleWonder(this)">
+      <div class="w-hd"><span class="w-icon">🗽</span><div class="w-name">Rhodes</div><span class="w-chev">▼</span></div>
+      <div class="w-body">
+        <div class="w-stage"><span class="w-stage-label">Etapa especial</span><span class="w-stage-effect">Mira las 5 cartas superiores del mazo izq. o der. — elige 1 y baraja el resto</span></div>
+        <div style="font-size:10px;color:#446688;margin-top:6px">El efecto más selectivo — casi garantiza conseguir la carta que necesitas.</div>
+      </div>
+    </div>
+
+    <div class="wonder-card" onclick="toggleWonder(this)">
+      <div class="w-hd"><span class="w-icon">🌊</span><div class="w-name">Halicarnassus</div><span class="w-chev">▼</span></div>
+      <div class="w-body">
+        <div class="w-stage"><span class="w-stage-label">Etapa especial</span><span class="w-stage-effect">Elige 1 Token de Progreso de los 4 disponibles</span></div>
+        <div style="font-size:10px;color:#446688;margin-top:6px">Acceso directo a Progreso sin necesitar cartas Verdes — valiosísimo.</div>
+      </div>
+    </div>
+
+    <div class="wonder-card" onclick="toggleWonder(this)">
+      <div class="w-hd"><span class="w-icon">🏰</span><div class="w-name">Babylon</div><span class="w-chev">▼</span></div>
+      <div class="w-body">
+        <div class="w-stage"><span class="w-stage-label">Etapa especial</span><span class="w-stage-effect">Elige 1 Token de Progreso de los 4 disponibles</span></div>
+        <div style="font-size:10px;color:#446688;margin-top:6px">Igual que Halicarnassus — 2 Maravillas comparten el acceso a Progreso directo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn" style="margin-top:8px">⚠️ Cada Maravilla tiene su distribución específica de PV por etapa en su bandeja. Las etapas sin efecto especial son solo PV al final.</div>
+
+  <footer><span>CADA MARAVILLA TIENE 5 ETAPAS ÚNICAS</span><span>CONSULTA TU BANDEJA PARA COSTOS Y PV EXACTOS</span></footer>
+</div>
+
+<!-- ===== SETUP ===== -->
+<div id="tab-setup" class="tab-panel">
+  <div class="sec">Preparación paso a paso</div>
+
+  <div class="step"><div class="sn">1</div><div class="st">Cada jugador elige (o toma aleatoriamente) una bandeja de Maravilla. Ensambla las 5 piezas con el lado "En Construcción" hacia arriba siguiendo el diagrama de la bandeja.</div></div>
+  <div class="step"><div class="sn">2</div><div class="st">Mezcla el mazo de cartas de cada Maravilla por separado y colócalo boca arriba en el soporte, entre tú y tu vecino izquierdo.</div></div>
+  <div class="step"><div class="sn">3</div><div class="st">Mezcla las cartas comunes y forma el <strong>mazo central</strong> boca abajo en el centro de la mesa. Deja espacio al lado para el descarte (boca arriba).</div></div>
+  <div class="step"><div class="sn">4</div><div class="st">Mezcla los Tokens de Progreso y forma una pila boca abajo. Saca los 3 superiores y ponlos boca arriba junto a la pila.</div></div>
+  <div class="step"><div class="sn">5</div><div class="st">Coloca el número correcto de tokens de Conflicto (cara Paz) según la tabla de jugadores. Retira los sobrantes.</div></div>
+  <div class="step"><div class="sn">6</div><div class="st">Forma la reserva de Tokens de Victoria Militar junto al tablero.</div></div>
+  <div class="step"><div class="sn">7</div><div class="st">Coloca el Peón Gato en el centro de la mesa.</div></div>
+  <div class="step"><div class="sn">8</div><div class="st">El <strong>jugador más joven</strong> empieza. El juego continúa en sentido horario.</div></div>
+
+  <div class="sec" style="margin-top:14px">Referencia: tokens de Conflicto por jugadores</div>
+  <table>
+    <tr><th>Jugadores</th><th>Tokens de Conflicto</th><th>Tokens de Progreso visibles</th></tr>
+    <tr><td>2–3</td><td>4</td><td>3 + pila</td></tr>
+    <tr><td>4–5</td><td>5</td><td>3 + pila</td></tr>
+    <tr><td>6–7</td><td>6</td><td>3 + pila</td></tr>
+  </table>
+
+  <div class="sec" style="margin-top:14px">Regla especial para 2 jugadores</div>
+  <div class="info">🎮 Con 2 jugadores, la regla de Batalla cambia: si tienes <strong>el doble o más escudos</strong> que tu único oponente, tomas <strong>2 Tokens de Victoria Militar</strong> en lugar de 1.</div>
+
+  <footer><span>MÁS JOVEN EMPIEZA · SENTIDO HORARIO</span><span>MAZO PERSONAL = BOCA ARRIBA ENTRE TÚ Y VECINO IZQ.</span></footer>
+</div>
+
+</div>
+
+<script>
+function toggleCard(hd){hd.parentElement.classList.toggle('open')}
+function toggleType(el){el.classList.toggle('open')}
+function toggleWonder(el){el.classList.toggle('open')}
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

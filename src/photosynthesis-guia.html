@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photosynthesis — Guía Rápida</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#060e06;color:#d8e8d0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    min-height:100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 10%,#0a1a0a 0%,transparent 55%),
+      radial-gradient(ellipse at 80% 90%,#0e0a14 0%,transparent 50%);
+  }
+  header{
+    border-bottom:2px solid #1a3a10;padding:14px 16px 12px;
+    background:linear-gradient(180deg,#060e06 0%,#060e06 100%);
+    display:flex;align-items:center;gap:12px;
+  }
+  .back-btn{color:#4a8a30;font-size:12px;text-decoration:none;border:1px solid #1a3a10;padding:4px 10px;border-radius:4px;font-family:monospace;letter-spacing:1px;transition:all 0.15s;flex-shrink:0}
+  .back-btn:hover{background:#0a1a08;color:#88cc44}
+  .sub{font-size:9px;letter-spacing:4px;color:#2a5a18;text-transform:uppercase;font-family:monospace}
+  .main-title{font-size:20px;font-weight:bold;color:#88dd44;letter-spacing:1px}
+  .tagline{font-size:10px;color:#3a5a30;letter-spacing:1px;margin-top:2px}
+
+  .nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #0e1e0a;background:#040c04;overflow-x:auto}
+  .nav-btn{background:transparent;border:1px solid #1a2a10;color:#446633;padding:6px 12px;cursor:pointer;font-size:10px;border-radius:2px;white-space:nowrap;text-transform:uppercase;letter-spacing:1px;font-family:monospace;transition:all 0.15s}
+  .nav-btn.active{background:#1a3010;border-color:#4a8a20;color:#88dd44}
+
+  .container{padding:14px 16px;max-width:720px;margin:0 auto}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  .sec{font-size:9px;letter-spacing:3px;color:#2a5a18;text-transform:uppercase;margin-bottom:8px;margin-top:16px;border-bottom:1px solid #0e1e0a;padding-bottom:4px}
+  .sec:first-child{margin-top:0}
+
+  .card{background:#080e06;border:1px solid #1a2a10;border-radius:4px;overflow:hidden;margin-bottom:8px}
+  .card-hd{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;transition:background 0.15s}
+  .card-hd:hover{background:#0e1a0a}
+  .card-title{font-size:13px;font-weight:bold;flex:1}
+  .card-chev{color:#2a4020;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .card.open .card-chev{transform:rotate(180deg)}
+  .card-body{display:none;border-top:1px solid #0e1e0a;padding:12px 14px}
+  .card.open .card-body{display:block}
+
+  .desc{font-size:12px;color:#7a9870;line-height:1.7;margin-bottom:8px}
+  .step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+  .sn{background:#0e1e08;border:1px solid #2a5010;color:#88dd44;font-size:10px;font-weight:bold;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:monospace}
+  .st{font-size:12px;color:#7a9870;line-height:1.6}
+  .tip{background:#081408;border:1px solid #1a4010;border-radius:3px;padding:8px 12px;font-size:11px;color:#55aa33;margin:6px 0;line-height:1.6}
+  .warn{background:#140808;border:1px solid #4a1a10;border-radius:3px;padding:8px 12px;font-size:11px;color:#cc5533;margin:6px 0;line-height:1.6}
+  .info{background:#080e14;border:1px solid #1a2a40;border-radius:3px;padding:8px 12px;font-size:11px;color:#5588aa;margin:6px 0;line-height:1.6}
+  .moon-box{background:#0a0814;border:1px solid #2a1a40;border-radius:3px;padding:8px 12px;font-size:11px;color:#9966dd;margin:6px 0;line-height:1.6}
+
+  table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+  th{background:#0e1e08;color:#4a8a20;padding:7px 10px;text-align:left;border:1px solid #1a2a10;font-family:monospace;letter-spacing:1px;font-size:9px;text-transform:uppercase}
+  td{padding:7px 10px;border:1px solid #0e1e0a;color:#7a9870;vertical-align:top;line-height:1.5}
+  tr:nth-child(even) td{background:#080e06}
+
+  /* COST TABLE special */
+  .cost-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin:8px 0}
+  .cost-cell{background:#080e06;border:1px solid #1a2a10;border-radius:4px;padding:10px 8px;text-align:center}
+  .cost-icon{font-size:22px;display:block;margin-bottom:4px}
+  .cost-name{font-size:10px;color:#5a8a40;font-weight:bold;margin-bottom:6px}
+  .cost-row{font-size:10px;color:#6a8a60;line-height:1.7}
+  .cost-lp{font-size:12px;font-weight:bold;color:#e8c84a}
+
+  /* ANIMAL CARDS */
+  .animal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:10px}
+  .animal-card{background:#080e0e;border:1px solid #1a2a1a;border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color 0.15s}
+  .animal-card:hover{border-color:#2a4a2a}
+  .animal-card.open{border-color:#4a8a30}
+  .animal-hd{display:flex;align-items:center;gap:8px;padding:9px 12px}
+  .animal-icon{font-size:20px;flex-shrink:0}
+  .animal-name{font-size:13px;font-weight:bold;color:#88dd44;flex:1}
+  .animal-chev{color:#2a4020;font-size:11px;transition:transform 0.2s}
+  .animal-card.open .animal-chev{transform:rotate(180deg)}
+  .animal-body{display:none;border-top:1px solid #0e1e0a;padding:9px 12px;font-size:11px;color:#7a9870;line-height:1.7}
+  .animal-card.open .animal-body{display:block}
+  .ability{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+  .ability-name{color:#88dd44;font-weight:bold;font-size:10px}
+  .ability-cost{color:#e8c84a;font-family:monospace;font-size:10px;white-space:nowrap}
+  .ability-desc{font-size:10px;color:#6a8860;line-height:1.6;margin-bottom:6px;padding-left:6px;border-left:2px solid #1a3010}
+
+  footer{margin-top:14px;padding-top:10px;border-top:1px solid #0e1e0a;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+  footer span{font-size:9px;color:#1a2a10;font-family:monospace}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">← Biblioteca</a>
+  <div>
+    <div class="sub">Guía de referencia</div>
+    <div class="main-title">🌳 PHOTOSYNTHESIS</div>
+    <div class="tagline">2–4 jugadores · 45–60 min · Estrategia abstracta</div>
+  </div>
+</header>
+
+<div class="nav">
+  <button class="nav-btn active" id="navbtn-resumen" onclick="switchTab('resumen',this)">🌞 Resumen</button>
+  <button class="nav-btn" id="navbtn-fases" onclick="switchTab('fases',this)">🔄 Fases</button>
+  <button class="nav-btn" id="navbtn-acciones" onclick="switchTab('acciones',this)">⚡ Acciones</button>
+  <button class="nav-btn" id="navbtn-sombras" onclick="switchTab('sombras',this)">🌑 Sombras</button>
+  <button class="nav-btn" id="navbtn-setup" onclick="switchTab('setup',this)">🎲 Setup</button>
+  <button class="nav-btn" id="navbtn-moonlight" onclick="switchTab('moonlight',this)">🌙 Under the Moonlight</button>
+</div>
+
+<div class="container">
+
+<!-- ===== RESUMEN ===== -->
+<div id="tab-resumen" class="tab-panel active">
+  <div class="sec">¿De qué va el juego?</div>
+  <div class="desc">Compites con otras especies de árboles para crecer, expandirte y absorber la mayor cantidad de luz solar posible. El sol rota alrededor del bosque hexagonal y tú ganas Puntos de Luz según qué árboles estén iluminados. Con esos puntos compras y haces crecer tus árboles, y cuando un árbol alcanza su madurez plena, lo "cosechas" para obtener Tokens de Puntuación. Gana quien tenga más puntos al final de 3 revoluciones del sol (18 rondas).</div>
+
+  <div class="sec">Ciclo de vida de un árbol</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;padding:12px;background:#080e06;border:1px solid #1a2a10;border-radius:4px">
+    <div style="text-align:center;flex:1;min-width:60px">
+      <div style="font-size:24px">🌱</div>
+      <div style="font-size:10px;color:#5a7a40;margin-top:3px">Semilla</div>
+      <div style="font-size:9px;color:#3a5a28">0 LP</div>
+    </div>
+    <div style="color:#3a5a28;font-size:18px">→</div>
+    <div style="text-align:center;flex:1;min-width:60px">
+      <div style="font-size:24px">🌿</div>
+      <div style="font-size:10px;color:#5a7a40;margin-top:3px">Árbol Pequeño</div>
+      <div style="font-size:9px;color:#88cc44">+1 LP · sombra 1</div>
+    </div>
+    <div style="color:#3a5a28;font-size:18px">→</div>
+    <div style="text-align:center;flex:1;min-width:60px">
+      <div style="font-size:24px">🌲</div>
+      <div style="font-size:10px;color:#5a7a40;margin-top:3px">Árbol Mediano</div>
+      <div style="font-size:9px;color:#88cc44">+2 LP · sombra 2</div>
+    </div>
+    <div style="color:#3a5a28;font-size:18px">→</div>
+    <div style="text-align:center;flex:1;min-width:60px">
+      <div style="font-size:24px">🌳</div>
+      <div style="font-size:10px;color:#5a7a40;margin-top:3px">Árbol Grande</div>
+      <div style="font-size:9px;color:#88cc44">+3 LP · sombra 3</div>
+    </div>
+    <div style="color:#3a5a28;font-size:18px">→</div>
+    <div style="text-align:center;flex:1;min-width:60px">
+      <div style="font-size:24px">🏆</div>
+      <div style="font-size:10px;color:#e8c84a;margin-top:3px">Cosechar</div>
+      <div style="font-size:9px;color:#cc9933">Token de puntos</div>
+    </div>
+  </div>
+
+  <div class="sec">Tokens de puntuación (zonas del bosque)</div>
+  <div class="desc">El bosque tiene 4 anillos. Entre más al centro cosechas un árbol grande, más puntos vale el token que recibes. Los tokens en la parte superior de cada pila son los de mayor valor — a medida que se van tomando, los siguientes valen menos.</div>
+  <table>
+    <tr><th>Zona (anillo)</th><th>Hojas</th><th>Puntos posibles</th><th>Nota</th></tr>
+    <tr><td>🟫 Exterior (1 hoja)</td><td>1</td><td>12–13 pts</td><td>La menos valiosa</td></tr>
+    <tr><td>🟡 2 hojas</td><td>2</td><td>13–16 pts</td><td>—</td></tr>
+    <tr><td>🟢 3 hojas</td><td>3</td><td>17–19 pts</td><td>—</td></tr>
+    <tr><td>🌿 Centro (4 hojas)</td><td>4</td><td>20–22 pts</td><td>¡El más valioso!</td></tr>
+  </table>
+  <div class="warn">⚠️ Los tokens se agotan. Si ya no quedan tokens en la pila de tu zona, no recibes ninguno (la cosecha fue gratis pero sin puntos).</div>
+
+  <div class="sec">Final del juego y puntuación</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#88dd44">🏆 ¿Cómo se cuenta?</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="step"><div class="sn">1</div><div class="st">Suma los valores de todos tus <strong style="color:#88dd44">Tokens de Puntuación</strong> cosechados.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Añade <strong style="color:#e8c84a">1 punto por cada 3 Puntos de Luz</strong> que te sobren sin usar. Los LP sobrantes que no lleguen a múltiplos de 3 no puntúan.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">El jugador con más puntos gana. En caso de empate → gana quien tenga más árboles y semillas en el tablero combinados.</div></div>
+    </div>
+  </div>
+
+  <footer><span>3 REVOLUCIONES DEL SOL = 18 RONDAS</span><span>MÁX. 20 PUNTOS DE LUZ EN TODO MOMENTO</span></footer>
+</div>
+
+<!-- ===== FASES ===== -->
+<div id="tab-fases" class="tab-panel">
+  <div class="sec">Estructura de cada ronda</div>
+  <div class="desc">Cada ronda tiene dos fases que se ejecutan en orden. El jugador con el token de Primer Jugador inicia la ronda.</div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#e8c84a">☀️ FASE 1 — Fotosíntesis (cobrar Puntos de Luz)</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="step"><div class="sn">1</div><div class="st">El jugador con el token de Primer Jugador mueve el <strong>segmento del Sol</strong> 1 posición en sentido horario. (En la primera ronda del juego se omite este paso.)</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Todos los jugadores calculan sus Puntos de Luz simultáneamente. Cada árbol que <strong>no esté en sombra</strong> genera puntos según su tamaño: Pequeño = 1 LP, Mediano = 2 LP, Grande = 3 LP. Las semillas nunca generan LP.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Cada jugador mueve su marcador en el track de LP de su tablero personal. Máximo: <strong>20 LP en cualquier momento</strong>. Los LP extra se pierden.</div></div>
+      <div class="tip">💡 Los LP se acumulan entre rondas — no se pierden al final del turno, solo al llegar a 20.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#88dd44">🌱 FASE 2 — Ciclo de Vida (gastar Puntos de Luz)</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Empezando por el Primer Jugador en sentido horario, cada jugador realiza su turno completo (todas las acciones que quiera pagar) antes de pasar al siguiente. Las acciones cuestan LP.</div>
+      <div class="warn">⚠️ Regla crítica: en un mismo turno NO puedes realizar más de una acción sobre la MISMA casilla del tablero. Una vez actuada, esa casilla queda "activada" para ti ese turno. No puedes plantar una semilla Y hacerla crecer en la misma casilla en el mismo turno.</div>
+      <div class="tip">💡 Puedes gastar tantos LP como quieras o guardarlos para rondas futuras.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#aaaaaa">🔄 Fin de ronda</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Cuando todos los jugadores han completado su turno, el token de Primer Jugador pasa al siguiente jugador en sentido horario. Empieza una nueva ronda con la Fase de Fotosíntesis.</div>
+      <div class="desc">Cuando el Sol completa una vuelta completa (6 posiciones), se retira 1 token del contador de Revoluciones. El juego termina al concluir la <strong style="color:#88dd44">tercera revolución</strong> (18 rondas totales). La última ronda es en la 6ª posición del sol de la tercera vuelta.</div>
+    </div>
+  </div>
+
+  <footer><span>FASE 1 (cobrar LP) → FASE 2 (gastar LP) → siguiente jugador</span><span>6 POSICIONES DEL SOL × 3 VUELTAS = 18 RONDAS</span></footer>
+</div>
+
+<!-- ===== ACCIONES ===== -->
+<div id="tab-acciones" class="tab-panel">
+  <div class="sec">Costos de todas las acciones</div>
+  <div class="desc">Durante la Fase de Ciclo de Vida puedes realizar tantas acciones como puedas pagar. Primero compras al tablero personal (Available Area), luego plantas/haces crecer en el tablero principal.</div>
+
+  <div class="cost-grid">
+    <div class="cost-cell"><span class="cost-icon">🌱</span><div class="cost-name">Semilla</div><div class="cost-row">Comprar: <span class="cost-lp">1 LP</span></div><div class="cost-row">2ª semilla: <span class="cost-lp">2 LP</span></div><div class="cost-row">3ª semilla: <span class="cost-lp">3 LP</span></div><div class="cost-row">4ª semilla: <span class="cost-lp">4 LP</span></div></div>
+    <div class="cost-cell"><span class="cost-icon">🌿</span><div class="cost-name">Árbol Pequeño</div><div class="cost-row">Comprar: <span class="cost-lp">2 LP</span></div><div class="cost-row">2º: <span class="cost-lp">3 LP</span></div><div class="cost-row">3º: <span class="cost-lp">4 LP</span></div><div class="cost-row">4º: <span class="cost-lp">5 LP</span></div></div>
+    <div class="cost-cell"><span class="cost-icon">🌲</span><div class="cost-name">Árbol Mediano</div><div class="cost-row">Comprar: <span class="cost-lp">3 LP</span></div><div class="cost-row">2º: <span class="cost-lp">4 LP</span></div><div class="cost-row">3º: <span class="cost-lp">5 LP</span></div><div class="cost-row">—</div></div>
+    <div class="cost-cell"><span class="cost-icon">🌳</span><div class="cost-name">Árbol Grande</div><div class="cost-row">Comprar: <span class="cost-lp">4 LP</span></div><div class="cost-row">2º: <span class="cost-lp">5 LP</span></div><div class="cost-row">—</div><div class="cost-row">—</div></div>
+  </div>
+  <div class="info">📌 El costo de compra aumenta según cuántos ya hayas comprado ese tipo. Los costos se leen de abajo hacia arriba en tu tablero personal — el más barato siempre está al fondo de cada columna.</div>
+
+  <div class="sec">Las 4 acciones en detalle</div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#88dd44">🛒 Comprar (Buy)</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Paga el costo en LP para mover una semilla o árbol desde las columnas de tu tablero personal a tu <strong>"Available Area"</strong> (área disponible). Esto NO lo coloca en el tablero principal — solo lo hace disponible para plantar/crecer.</div>
+      <div class="tip">💡 Siempre compras el ítem del fondo de cada columna (el más barato). A medida que compras, la columna se vacía y el siguiente es más caro.</div>
+      <div class="warn">⚠️ Las semillas y árboles que regresan al tablero personal por crecimiento NO van directamente al Available Area — vuelven a su columna en el espacio más alto disponible.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#88dd44">🌱 Plantar Semilla</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Gasta <strong style="color:#e8c84a">1 LP</strong>: toma 1 semilla de tu Available Area y colócala en una casilla vacía del tablero principal, dentro del rango de uno de tus árboles ya plantados.</div>
+      <div class="sec" style="margin-top:8px">Rango de plantado según tamaño del árbol origen:</div>
+      <table>
+        <tr><th>Árbol origen</th><th>Rango máximo</th></tr>
+        <tr><td>🌿 Pequeño</td><td>1 casilla de distancia</td></tr>
+        <tr><td>🌲 Mediano</td><td>2 casillas de distancia</td></tr>
+        <tr><td>🌳 Grande</td><td>3 casillas de distancia</td></tr>
+      </table>
+      <div class="warn">⚠️ No puedes plantar una semilla Y hacerla crecer en el mismo turno (misma casilla = activada).</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#88dd44">🌳 Hacer Crecer un Árbol (Grow)</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Gasta LP según el tamaño al que crece: para crecer un árbol debes tener el siguiente tamaño disponible en tu Available Area.</div>
+      <table>
+        <tr><th>Crece de</th><th>Crece a</th><th>Costo</th></tr>
+        <tr><td>🌱 Semilla</td><td>🌿 Árbol Pequeño</td><td style="color:#e8c84a">1 LP</td></tr>
+        <tr><td>🌿 Árbol Pequeño</td><td>🌲 Árbol Mediano</td><td style="color:#e8c84a">2 LP</td></tr>
+        <tr><td>🌲 Árbol Mediano</td><td>🌳 Árbol Grande</td><td style="color:#e8c84a">3 LP</td></tr>
+      </table>
+      <div class="desc" style="margin-top:6px">El árbol anterior vuelve a tu tablero personal (al espacio más alto disponible de su tipo). El nuevo árbol viene de tu Available Area.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#e8c84a">🏆 Cosechar (Collect)</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Gasta <strong style="color:#e8c84a">4 LP</strong>: retira un Árbol Grande tuyo del tablero y recibe el token de Puntuación del tope de la pila correspondiente a la zona donde estaba.</div>
+      <div class="step"><div class="sn">1</div><div class="st">El Árbol Grande vuelve a tu tablero personal.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Tomas el token superior de la pila de esa zona (exterior = 1 hoja, …, centro = 4 hojas).</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Si la pila ya está vacía, igualmente retiras el árbol pero sin recibir ningún token.</div></div>
+      <div class="tip">💡 Esta es la única forma de ganar Tokens de Puntuación. Cuanto más al centro cosechas, más puntos. ¡Anticipa bien cuándo hacerlo!</div>
+    </div>
+  </div>
+
+  <footer><span>1 CASILLA = 1 ACCIÓN POR TURNO POR JUGADOR</span><span>SEMILLA NO PUEDE PLANTAR Y CRECER EN MISMO TURNO</span></footer>
+</div>
+
+<!-- ===== SOMBRAS ===== -->
+<div id="tab-sombras" class="tab-panel">
+  <div class="sec">Cómo funcionan las sombras</div>
+  <div class="desc">Los árboles proyectan sombras en la dirección opuesta al sol. Un árbol en sombra no recibe Puntos de Luz durante esa ronda.</div>
+
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#88dd44">🌑 Reglas de sombra</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <table>
+        <tr><th>Árbol que proyecta</th><th>Longitud de sombra</th></tr>
+        <tr><td>🌿 Árbol Pequeño</td><td>1 casilla</td></tr>
+        <tr><td>🌲 Árbol Mediano</td><td>2 casillas</td></tr>
+        <tr><td>🌳 Árbol Grande</td><td>3 casillas</td></tr>
+        <tr><td>🌱 Semilla</td><td>No proyecta sombra</td></tr>
+      </table>
+      <div class="sec" style="margin-top:10px">¿Cuándo bloquea la sombra?</div>
+      <div class="step"><div class="sn">✓</div><div class="st">Un árbol queda en sombra si hay otro árbol <strong>del mismo tamaño o mayor</strong> interpuesto entre él y el sol, a la distancia correspondiente.</div></div>
+      <div class="step"><div class="sn">✗</div><div class="st">Si el árbol en sombra es <strong>más alto</strong> que el árbol que lo bloquea → no queda en sombra (sobresale por encima).</div></div>
+      <div class="warn">⚠️ La sombra afecta a TUS PROPIOS árboles también. Un árbol tuyo puede tapar a otro árbol tuyo.</div>
+      <div class="tip">💡 La especie del árbol que proyecta la sombra no importa — solo el tamaño determina la longitud de la sombra.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#88dd44">☀️ ¿Cómo se calcula la luz en una ronda?</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">El Sol ilumina el tablero desde un ángulo. Hay 7 "filas" de casillas en la dirección del sol. Para cada fila, verifica de delante hacia atrás (desde el borde iluminado hacia el interior):</div>
+      <div class="step"><div class="sn">1</div><div class="st">El primer árbol en la fila recibe luz (si no está bloqueado por árboles en filas anteriores).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Ese árbol proyecta su sombra sobre las casillas detrás de él (según su tamaño).</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Los árboles en la sombra no reciben LP — salvo que sean más grandes que el árbol que los bloquea.</div></div>
+      <div class="tip">💡 Clave estratégica: anticipa dónde estará el sol en las próximas rondas. Plantar en zonas que estarán bien iluminadas cuando el sol rote es crucial.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#aaaaaa">📋 Variante avanzada: Sombra Pesada</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Modo opcional más difícil: <strong>no puedes plantar una semilla ni hacer crecer un árbol si esa casilla está actualmente en sombra</strong>. Hace que la planificación de posiciones sea mucho más restrictiva.</div>
+    </div>
+  </div>
+
+  <footer><span>SOMBRA = MISMO TAMAÑO O MAYOR · MISMO LADO QUE EL SOL</span><span>TUS PROPIOS ÁRBOLES SE BLOQUEAN ENTRE SÍ</span></footer>
+</div>
+
+<!-- ===== SETUP ===== -->
+<div id="tab-setup" class="tab-panel">
+  <div class="sec">Preparación</div>
+  <div class="step"><div class="sn">1</div><div class="st">Coloca el tablero en el centro. Pon el Segmento del Sol en el lado marcado con el símbolo del sol.</div></div>
+  <div class="step"><div class="sn">2</div><div class="st">Apila los Tokens de Puntuación en 4 pilas según el número de hojas (1–4), con los de mayor valor arriba.</div></div>
+  <div class="step"><div class="sn">3</div><div class="st">Cada jugador toma su tablero personal, tracker de LP, y sus piezas del color elegido.</div></div>
+  <div class="step"><div class="sn">4</div><div class="st">En cada tablero personal coloca: 4 semillas, 4 Árboles Pequeños, 3 Árboles Medianos, 2 Árboles Grandes en sus espacios. Pon el tracker de LP en 0.</div></div>
+  <div class="step"><div class="sn">5</div><div class="st">Cada jugador tendrá disponibles (fuera del tablero personal): 2 semillas, 4 Árboles Pequeños, 1 Árbol Mediano. Estos son los disponibles al inicio.</div></div>
+  <div class="step"><div class="sn">6</div><div class="st">El jugador más joven recibe el token de Primer Jugador.</div></div>
+  <div class="step"><div class="sn">7</div><div class="st"><strong>Colocación inicial:</strong> Por turnos, cada jugador coloca 1 Árbol Pequeño disponible en cualquier casilla del borde exterior del bosque (zona de 1 hoja). Luego una segunda ronda donde cada jugador coloca 1 Árbol Pequeño más. Todos empiezan con 2 árboles en el tablero.</div></div>
+
+  <div class="sec" style="margin-top:14px">Componentes por jugador</div>
+  <table>
+    <tr><th>Pieza</th><th>En tablero personal</th><th>En Available Area inicial</th></tr>
+    <tr><td>🌱 Semillas</td><td>4</td><td>2</td></tr>
+    <tr><td>🌿 Árboles Pequeños</td><td>4</td><td>4 (2 ya colocados en tablero)</td></tr>
+    <tr><td>🌲 Árboles Medianos</td><td>3</td><td>1</td></tr>
+    <tr><td>🌳 Árboles Grandes</td><td>2</td><td>0</td></tr>
+  </table>
+
+  <div class="sec" style="margin-top:14px">Contadores de Revolución</div>
+  <div class="desc">Hay 3 tokens de Revolución del Sol (o 4 en la variante larga). Cada vez que el sol completa una vuelta completa se retira 1. Cuando se retira el último, el juego termina después de la ronda actual.</div>
+  <div class="info">📌 Variante larga: usa el 4° counter — el juego dura 24 rondas en total.</div>
+
+  <footer><span>COLOCACIÓN INICIAL: BORDE EXTERIOR SOLO · 2 ÁRBOLES POR JUGADOR</span><span>SOL EN POSICIÓN MARCADA CON SÍMBOLO ☀️</span></footer>
+</div>
+
+<!-- ===== UNDER THE MOONLIGHT ===== -->
+<div id="tab-moonlight" class="tab-panel">
+  <div style="background:#0a0814;border:1px solid #2a1a40;border-radius:4px;padding:12px 14px;margin-bottom:14px">
+    <div style="font-size:17px;font-weight:bold;color:#9966dd;margin-bottom:4px">🌙 Under the Moonlight</div>
+    <div style="font-size:12px;color:#6a5888;line-height:1.6;margin-bottom:5px">Expansión que añade la Luna, Animales del Bosque con habilidades únicas, Piedras Lunares y el Gran Árbol Anciano. Totalmente modular — usa todos los elementos o combínalos a tu gusto.</div>
+    <div style="font-size:10px;color:#4a3a60;font-family:monospace">⚠️ Requiere Photosynthesis (juego base)</div>
+  </div>
+
+  <div class="sec">3 modos modulares (combínalos como quieras)</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#9966dd">🌙 Modo 1: La Luna y los Animales del Bosque</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="moon-box">La Luna se mueve en dirección <strong>opuesta al Sol</strong> (sentido antihorario), avanzando 5 espacios cada ronda. Cada Animal en el camino de la luz lunar recibe Puntos Lunares (LP Lunares).</div>
+      <div class="sec" style="margin-top:8px">La Luna</div>
+      <div class="step"><div class="sn">1</div><div class="st">La Luna ilumina <strong>2 caminos</strong> (indicados por las flechas en el token). Los árboles NO bloquean la luna (excepto el Gran Árbol Anciano).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st"><strong>Media Luna:</strong> los animales en el camino reciben <span style="color:#9966dd">1 Punto Lunar</span>. <strong>Luna Llena:</strong> reciben <span style="color:#9966dd">2 Puntos Lunares</span>.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Cuando el Sol y la Luna se cruzan, el token de Luna se voltea (Media Luna ↔ Luna Llena).</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Máximo <strong>14 Puntos Lunares</strong>. El exceso se pierde.</div></div>
+      <div class="sec" style="margin-top:10px">Los Animales durante la Fase de Ciclo de Vida</div>
+      <div class="step"><div class="sn">A</div><div class="st"><strong>Mover el Animal:</strong> puedes moverlo 1 casilla adyacente (en cualquier dirección). Puede estar en casillas con árboles o semillas, pero no con otro Animal, Piedra Lunar, ni el Gran Árbol Anciano.</div></div>
+      <div class="step"><div class="sn">B</div><div class="st"><strong>Activar habilidades:</strong> gasta los LP Lunares requeridos. Cada habilidad solo 1 vez por turno. Puedes combinar habilidades de diferente nombre en el mismo turno.</div></div>
+      <div class="tip">💡 Al final del juego, ganas 1 Punto de Puntuación por cada Punto Lunar sin usar.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#9966dd">🌲 Modo 2: El Gran Árbol Anciano</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Un árbol gigante neutral que no pertenece a ningún jugador y no puede ser cosechado. El último jugador en el orden de turno lo coloca en cualquier casilla vacía.</div>
+      <div class="step"><div class="sn">1</div><div class="st">Proyecta sombra en la dirección opuesta al Sol <strong>Y</strong> también en la dirección opuesta a la Luna — dos sombras simultáneas.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Los árboles en su sombra solar no reciben LP. Los Animales en su sombra lunar no reciben LP Lunares.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Es una casilla obstáculo: no se pueden plantar semillas ni mover Animales a su casilla.</div></div>
+      <div class="warn">⚠️ Si juegas con la Tortuga, el Gran Árbol Anciano no puede colocarse en una casilla con tokens de Tortuga Bebé.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="card-title" style="color:#9966dd">💎 Modo 3: Las Piedras Lunares (Moonstones)</span><span class="card-chev">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Gemas misteriosas que amplifican la luz lunar. No pertenecen a ningún jugador y no pueden moverse.</div>
+      <table>
+        <tr><th>Jugadores</th><th>Piedras Lunares en juego</th></tr>
+        <tr><td>2 jugadores</td><td>3 Piedras</td></tr>
+        <tr><td>3 jugadores</td><td>2 Piedras</td></tr>
+        <tr><td>4 jugadores</td><td>0 (o 1 si se usa el Gran Árbol Anciano)</td></tr>
+      </table>
+      <div class="step"><div class="sn">1</div><div class="st">Si una Piedra Lunar recibe luz lunar directa, <strong>irradia</strong> esa luz a las 6 casillas adyacentes. Los Animales en esas casillas reciben LP Lunares aunque la Luna no apunte directamente a ellos.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Las Piedras se encadenan: si una Piedra recibe luz indirecta de otra Piedra, también irradia a sus vecinas.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Proyectan sombra solar equivalente a un Árbol Pequeño (1 casilla). Son casillas obstáculo para semillas y Animales.</div></div>
+    </div>
+  </div>
+
+  <div class="sec">Los 8 Animales del Bosque</div>
+  <div class="animal-grid">
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🐗</span><div class="animal-name">Jabalí (Boar)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div class="ability"><span class="ability-name">Excavar Nv.1</span><span class="ability-cost">5 LP🌙</span></div>
+        <div class="ability-desc">Cosecha gratis un Árbol Grande en su casilla (tuyo). Sin gastar LP de luz.</div>
+        <div class="ability"><span class="ability-name">Excavar Nv.2</span><span class="ability-cost">8 LP🌙</span></div>
+        <div class="ability-desc">Cosecha gratis + planta una semilla en el espacio que quedó vacío.</div>
+      </div>
+    </div>
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🦊</span><div class="animal-name">Zorro (Fox)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div class="ability"><span class="ability-name">Asustar</span><span class="ability-cost">1 LP🌙</span></div>
+        <div class="ability-desc">Mueve 1 Animal adyacente 1 casilla en cualquier dirección.</div>
+        <div class="ability"><span class="ability-name">Rascar suelo</span><span class="ability-cost">3 LP🌙</span></div>
+        <div class="ability-desc">Mueve cualquier semilla en su casilla a otra casilla a 1–2 espacios en línea recta.</div>
+        <div class="ability"><span class="ability-name">Robar</span><span class="ability-cost">4 LP🌙</span></div>
+        <div class="ability-desc">Roba 2 LP de luz de cualquier jugador cuyo Animal esté adyacente al Zorro.</div>
+      </div>
+    </div>
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🦔</span><div class="animal-name">Erizo (Hedgehog)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div class="ability"><span class="ability-name">Correr</span><span class="ability-cost">1 LP🌙</span></div>
+        <div class="ability-desc">Se mueve 1 casilla extra (adicional a su movimiento normal).</div>
+        <div class="ability"><span class="ability-name">Plantar</span><span class="ability-cost">3 LP🌙</span></div>
+        <div class="ability-desc">Si está en una casilla vacía, planta una semilla ahí. La semilla viene directamente de tu tablero personal (¡sin necesidad de comprarla primero!).</div>
+      </div>
+    </div>
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🐿️</span><div class="animal-name">Ardilla (Squirrel)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div style="font-size:10px;color:#55aa33;margin-bottom:6px">⭐ Habilidad pasiva: puede moverse 1 o 2 casillas por turno (sin costo).</div>
+        <div class="ability"><span class="ability-name">Comer (1 hoja)</span><span class="ability-cost">5 LP🌙</span></div>
+        <div class="ability"><span class="ability-name">Comer (2 hojas)</span><span class="ability-cost">6 LP🌙</span></div>
+        <div class="ability"><span class="ability-name">Comer (3 hojas)</span><span class="ability-cost">7 LP🌙</span></div>
+        <div class="ability"><span class="ability-name">Comer (4 hojas)</span><span class="ability-cost">8 LP🌙</span></div>
+        <div class="ability-desc">Come una semilla rival en su casilla (de la zona indicada). La semilla vuelve al tablero del rival y él recibe 1 LP de compensación. La Ardilla gana 1 LP por cada hoja de la zona donde comió.</div>
+      </div>
+    </div>
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🦉</span><div class="animal-name">Búho (Owl)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div class="ability"><span class="ability-name">Caza Nocturna Nv.1</span><span class="ability-cost">5 LP🌙</span></div>
+        <div class="ability-desc">Ganas 3 LP de luz.</div>
+        <div class="ability"><span class="ability-name">Caza Nocturna Nv.2</span><span class="ability-cost">9 LP🌙</span></div>
+        <div class="ability-desc">Ganas 7 LP de luz.</div>
+        <div class="ability"><span class="ability-name">Caza Nocturna Nv.3</span><span class="ability-cost">12 LP🌙</span></div>
+        <div class="ability-desc">Ganas 10 LP de luz. El Búho convierte luz lunar en luz solar.</div>
+      </div>
+    </div>
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🦫</span><div class="animal-name">Castor (Beaver)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div style="font-size:10px;color:#5588aa;margin-bottom:6px">📌 Setup: el jugador con el Castor toma el tile de Presa.</div>
+        <div class="ability"><span class="ability-name">Construir Presa</span><span class="ability-cost">6 LP🌙</span></div>
+        <div class="ability-desc">Coloca el tile de Presa (3 casillas) en el tablero tocando el río. Todos los árboles/semillas en esas casillas crecen gratis (sin importar a quién pertenezcan).</div>
+        <div class="ability"><span class="ability-name">Mejorar Presa</span><span class="ability-cost">5 LP🌙</span></div>
+        <div class="ability-desc">Si el Castor está en una casilla de la Presa, hace crecer gratis 1 de sus árboles o semillas en la Presa.</div>
+      </div>
+    </div>
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🦡</span><div class="animal-name">Tejón (Badger)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div class="ability"><span class="ability-name">Crecer Nv.1</span><span class="ability-cost">4 LP🌙</span></div>
+        <div class="ability-desc">Hace crecer una semilla (tuya) en su casilla a Árbol Pequeño. El Pequeño debe estar en tu Available Area.</div>
+        <div class="ability"><span class="ability-name">Crecer Nv.2</span><span class="ability-cost">6 LP🌙</span></div>
+        <div class="ability-desc">Igual pero el Árbol Pequeño puede venir directamente de tu tablero personal. El árbol que crece puede plantar o crecer de nuevo en el mismo turno.</div>
+        <div class="warn" style="margin-top:4px">⚠️ No puede usarse en semillas plantadas ese mismo turno.</div>
+      </div>
+    </div>
+    <div class="animal-card" onclick="toggleAnimal(this)">
+      <div class="animal-hd"><span class="animal-icon">🐢</span><div class="animal-name">Tortuga (Turtle)</div><span class="animal-chev">▼</span></div>
+      <div class="animal-body">
+        <div style="font-size:10px;color:#5588aa;margin-bottom:6px">📌 Setup especial: coloca 6 tokens de Tortuga Bebé aleatorios boca abajo en las casillas de playa del tablero.</div>
+        <div class="ability"><span class="ability-name">Incubar Bebé</span><span class="ability-cost">4 LP🌙</span></div>
+        <div class="ability-desc">Voltea el token de Tortuga Bebé en tu casilla (si hay uno) y lo mueve a tu área disponible.</div>
+        <div class="ability"><span class="ability-name">Primeros pasos</span><span class="ability-cost">1 LP🌙</span></div>
+        <div class="ability-desc">Usa 1 habilidad de un token de Tortuga Bebé que tengas disponible. Las habilidades posibles son: 2 acciones en misma casilla, Árbol Pequeño gratis, Árbol Mediano gratis, Cosechar gratis, 3 LP de luz, Plantar semilla gratis, o +3 puntos al final (no se descarta, se acumula).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">💡 Al final del juego con expansión: añade 1 punto de puntuación por cada Punto Lunar sin gastar (además de los LP de luz regulares).</div>
+
+  <footer><span>LUNA MOVE ANTIHORARIO 5 ESPACIOS/RONDA</span><span>MÁX 14 LP LUNARES · CADA HABILIDAD 1 VEZ/TURNO</span></footer>
+</div>
+
+</div><!-- /container -->
+
+<script>
+function toggleCard(hd){hd.parentElement.classList.toggle('open')}
+function toggleAnimal(card){card.classList.toggle('open')}
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
