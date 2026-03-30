@@ -110,6 +110,7 @@
 </header>
 <div class="nav">
   <button class="nav-btn active" id="navbtn-phases" onclick="switchTab('phases',this)">⚙️ Fases</button>
+  <button class="nav-btn" id="navbtn-setup" onclick="switchTab('setup',this)">📋 Preparación</button>
   <button class="nav-btn" id="navbtn-danger" onclick="switchTab('danger',this)">⚡ Danger</button>
   <button class="nav-btn" id="navbtn-skills" onclick="switchTab('skills',this)">🎯 Habilidades</button>
   <button class="nav-btn" id="navbtn-expansiones" onclick="switchTab('expansiones',this)">🗺️ Expansiones</button>
@@ -143,6 +144,50 @@
       <div class="empty-sub">toca una fase y luego una acción</div>
     </div>
     <footer><span>ORDEN: Jugadores → Zombies → Fase Final</span><span>3 ACCIONES/TURNO</span></footer>
+  </div>
+
+  <!-- SETUP -->
+  <div id="tab-setup" class="tab-panel">
+    <div class="section-label">— Preparación de partida (Juego Base)</div>
+    <div style="background:#111;border:1px solid #2a2a2a;border-radius:4px;padding:12px 14px;margin-bottom:10px">
+      <div style="font-size:12px;color:#e8c84a;font-weight:bold;margin-bottom:6px">🧠 Flujo recomendado para jugar más fluido</div>
+      <div style="font-size:12px;color:#999;line-height:1.7">
+        1) Haz esta pestaña una vez antes de empezar.<br>
+        2) Durante la partida usa <span style="color:#ccc">Fases</span> y <span style="color:#ccc">Danger</span> como referencia rápida.<br>
+        3) Consulta <span style="color:#ccc">Habilidades</span> solo cuando subas de nivel.
+      </div>
+    </div>
+
+    <div style="font-size:10px;color:#555;font-family:monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Checklist de Setup</div>
+
+    <div style="background:#0f1418;border:1px solid #1a2530;border-radius:4px;padding:10px 12px;margin-bottom:6px">
+      <div style="font-size:11px;color:#6699bb;font-weight:bold;margin-bottom:3px">1) Elegir misión y montar tablero</div>
+      <div style="font-size:11px;color:#889;line-height:1.7">Coloca las tiles según la misión, puertas cerradas, objetivos, zonas de spawn y crates en sus posiciones indicadas.</div>
+    </div>
+
+    <div style="background:#0f1418;border:1px solid #1a2530;border-radius:4px;padding:10px 12px;margin-bottom:6px">
+      <div style="font-size:11px;color:#6699bb;font-weight:bold;margin-bottom:3px">2) Preparar sobrevivientes</div>
+      <div style="font-size:11px;color:#889;line-height:1.7">Cada jugador elige sobreviviente(s), coloca miniatura y dashboard. Empiezan en Nivel Azul con su habilidad inicial activa.</div>
+    </div>
+
+    <div style="background:#0f1418;border:1px solid #1a2530;border-radius:4px;padding:10px 12px;margin-bottom:6px">
+      <div style="font-size:11px;color:#6699bb;font-weight:bold;margin-bottom:3px">3) Inventario inicial</div>
+      <div style="font-size:11px;color:#889;line-height:1.7">Roba y asigna el equipo inicial indicado por la misión. Organiza en Hand/Backpack y deja espacio para búsquedas tempranas.</div>
+    </div>
+
+    <div style="background:#0f1418;border:1px solid #1a2530;border-radius:4px;padding:10px 12px;margin-bottom:6px">
+      <div style="font-size:11px;color:#6699bb;font-weight:bold;margin-bottom:3px">4) Preparar mazos y reservas</div>
+      <div style="font-size:11px;color:#889;line-height:1.7">Baraja mazo de Equipo y mazo de Zombies. Deja miniaturas y tokens a mano para no frenar la partida durante spawns.</div>
+    </div>
+
+    <div style="background:#0f1418;border:1px solid #1a2530;border-radius:4px;padding:10px 12px;margin-bottom:10px">
+      <div style="font-size:11px;color:#6699bb;font-weight:bold;margin-bottom:3px">5) Primer turno</div>
+      <div style="font-size:11px;color:#889;line-height:1.7">Elige primer jugador y empieza la ronda: <span style="color:#e8c84a">Fase Jugadores → Fase Zombies → Fase Final</span>.</div>
+    </div>
+
+    <div style="font-size:10px;color:#556;font-family:monospace;line-height:1.7">
+      ⚠️ Si juegan Washington Z.C. o PariZ, revisa la pestaña <span style="color:#6688aa">Expansiones</span> antes de iniciar por reglas de campaña y noche.
+    </div>
   </div>
 
   <!-- DANGER -->
