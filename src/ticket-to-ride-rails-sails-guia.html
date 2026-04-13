@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticket to Ride: Rails &amp; Sails — Guía Rápida</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:#060c10;color:#dce8f0;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    min-height:100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%,#081420 0%,transparent 55%),
+      radial-gradient(ellipse at 85% 90%,#060e18 0%,transparent 50%);
+  }
+  header{border-bottom:2px solid #0d3050;padding:14px 16px 12px;
+    background:linear-gradient(180deg,#070f1c 0%,#060c10 100%);
+    display:flex;align-items:center;gap:12px}
+  .back-btn{color:#4a9ac8;font-size:12px;text-decoration:none;border:1px solid #0d3050;padding:4px 10px;border-radius:4px;font-family:monospace;letter-spacing:1px;transition:all 0.15s;flex-shrink:0}
+  .back-btn:hover{background:#0a1e30;color:#80c4e8}
+  .sub{font-size:9px;letter-spacing:4px;color:#1a4060;text-transform:uppercase;font-family:monospace}
+  .main-title{font-size:20px;font-weight:bold;color:#4ab8e8;letter-spacing:1px}
+  .tagline{font-size:10px;color:#1e3a50;letter-spacing:1px;margin-top:2px}
+
+  .nav{display:flex;gap:4px;flex-wrap:wrap;padding:8px 14px;border-bottom:1px solid #091828;background:#050b14;overflow-x:auto}
+  .nav-btn{background:transparent;border:1px solid #0d2a40;color:#2a5878;padding:6px 12px;cursor:pointer;font-size:10px;border-radius:2px;white-space:nowrap;text-transform:uppercase;letter-spacing:1px;font-family:monospace;transition:all 0.15s}
+  .nav-btn.active{background:#0d2a40;border-color:#3a88b8;color:#4ab8e8}
+
+  .container{padding:14px 16px;max-width:720px;margin:0 auto}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block}
+
+  .sec{font-size:9px;letter-spacing:3px;color:#1a4060;text-transform:uppercase;margin-bottom:8px;margin-top:16px;border-bottom:1px solid #091828;padding-bottom:4px}
+  .sec:first-child{margin-top:0}
+
+  .card{background:#080e18;border:1px solid #0d2a40;border-radius:4px;overflow:hidden;margin-bottom:8px}
+  .card-hd{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;user-select:none;transition:background 0.15s}
+  .card-hd:hover{background:#0d1c2e}
+  .ct{font-size:13px;font-weight:bold;flex:1}
+  .cc{color:#0d2a40;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .card.open .cc{transform:rotate(180deg)}
+  .card-body{display:none;border-top:1px solid #091828;padding:12px 14px}
+  .card.open .card-body{display:block}
+
+  .desc{font-size:12px;color:#7aa8c8;line-height:1.7;margin-bottom:8px}
+  .step{display:flex;gap:8px;margin-bottom:6px;align-items:flex-start}
+  .sn{background:#081828;border:1px solid #2a6898;color:#4ab8e8;font-size:10px;font-weight:bold;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:monospace}
+  .st{font-size:12px;color:#7aa8c8;line-height:1.6}
+  .tip{background:#081410;border:1px solid #0a3820;border-radius:3px;padding:8px 12px;font-size:11px;color:#44aa77;margin:6px 0;line-height:1.6}
+  .warn{background:#120808;border:1px solid #501a10;border-radius:3px;padding:8px 12px;font-size:11px;color:#cc5533;margin:6px 0;line-height:1.6}
+  .info{background:#060e18;border:1px solid #0d2a50;border-radius:3px;padding:8px 12px;font-size:11px;color:#4488cc;margin:6px 0;line-height:1.6}
+
+  table{width:100%;border-collapse:collapse;font-size:11px;margin:8px 0}
+  th{background:#081420;color:#3a88b8;padding:7px 10px;text-align:left;border:1px solid #0d2a40;font-family:monospace;letter-spacing:1px;font-size:9px;text-transform:uppercase}
+  td{padding:7px 10px;border:1px solid #091828;color:#7aa8c8;vertical-align:top;line-height:1.5}
+  tr:nth-child(even) td{background:#080e18}
+
+  /* Transport type pills */
+  .transport-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .transport-pill{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:4px;font-size:11px;font-weight:600;border:1px solid}
+
+  /* Action cards */
+  .action-card{background:#080e18;border:1px solid #0d2a40;border-radius:4px;overflow:hidden;cursor:pointer;transition:border-color 0.15s;margin-bottom:8px}
+  .action-card:hover{border-color:#2a6898}
+  .action-card.open{border-color:#3a88b8}
+  .action-hd{display:flex;align-items:center;gap:10px;padding:11px 14px}
+  .action-icon{font-size:20px;flex-shrink:0}
+  .action-name{font-size:14px;font-weight:bold;color:#4ab8e8;flex:1}
+  .action-sub{font-size:10px;color:#1a5070;font-family:monospace;letter-spacing:1px}
+  .action-chev{color:#0d2a40;font-size:11px;flex-shrink:0;transition:transform 0.2s}
+  .action-card.open .action-chev{transform:rotate(180deg)}
+  .action-body{display:none;border-top:1px solid #091828;padding:12px 14px}
+  .action-card.open .action-body{display:block}
+
+  /* Strategy cards */
+  .strat-card{background:#080e18;border:1px solid #0d2a40;border-radius:4px;padding:12px 14px;margin-bottom:8px}
+  .strat-title{font-size:12px;font-weight:bold;color:#4a9ac8;margin-bottom:5px}
+  .strat-text{font-size:12px;color:#5a88a8;line-height:1.6}
+
+  /* Route scoring table highlight */
+  .pts-high{color:#4ab8e8;font-weight:bold}
+
+  footer{margin-top:14px;padding-top:10px;border-top:1px solid #091828;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+  footer span{font-size:9px;color:#0d2a40;font-family:monospace}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">← Biblioteca</a>
+  <div>
+    <div class="sub">Guía de referencia</div>
+    <div class="main-title">🚂 TICKET TO RIDE: RAILS &amp; SAILS</div>
+    <div class="tagline">2–5 jugadores · 60–120 min · Trenes y barcos por el mundo</div>
+  </div>
+</header>
+
+<div class="nav">
+  <button class="nav-btn active" id="navbtn-resumen" onclick="switchTab('resumen',this)">📋 Resumen</button>
+  <button class="nav-btn" id="navbtn-setup" onclick="switchTab('setup',this)">🎲 Setup</button>
+  <button class="nav-btn" id="navbtn-turno" onclick="switchTab('turno',this)">⚡ Tu Turno</button>
+  <button class="nav-btn" id="navbtn-rutas" onclick="switchTab('rutas',this)">🗺️ Rutas</button>
+  <button class="nav-btn" id="navbtn-destinos" onclick="switchTab('destinos',this)">🎯 Destinos y Puertos</button>
+  <button class="nav-btn" id="navbtn-puntuacion" onclick="switchTab('puntuacion',this)">🏆 Puntuación</button>
+  <button class="nav-btn" id="navbtn-estrategia" onclick="switchTab('estrategia',this)">🧠 Estrategia</button>
+</div>
+
+<div class="container">
+
+<!-- ===== RESUMEN ===== -->
+<div id="tab-resumen" class="tab-panel active">
+
+  <div class="sec">¿De qué va el juego?</div>
+  <div class="desc">
+    Conecta ciudades de todo el mundo construyendo rutas con <strong style="color:#4ab8e8">trenes</strong> y <strong style="color:#4ae8b8">barcos</strong>. Completa tus Billetes de Destino privados para ganar puntos, y trata de evitar dejarlos incompletos (restan puntos). El jugador con más puntos al final gana.
+  </div>
+
+  <div class="sec">Dos tableros incluidos</div>
+  <div class="transport-row">
+    <div class="transport-pill" style="background:#0a1828;border-color:#1a5080;color:#4ab8e8">🌍 Mapa Mundial — más largo, más épico</div>
+    <div class="transport-pill" style="background:#081c14;border-color:#1a5030;color:#44cc88">🌊 Grandes Lagos — más rápido y táctico</div>
+  </div>
+  <div class="info">📌 Ambos mapas mezclan rutas de tren y rutas de barco. La mecánica es la misma en los dos tableros.</div>
+
+  <div class="sec">La gran novedad: dos transportes</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#4ab8e8">🚂 Trenes vs 🚢 Barcos</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Hay dos mazos de cartas separados y dos tipos de vehículos:</div>
+      <table>
+        <tr><th>Elemento</th><th>Trenes 🚂</th><th>Barcos 🚢</th></tr>
+        <tr><td>Cartas de colores</td><td>Cartas de tren (8 colores + locomotora)</td><td>Cartas de barco (8 colores + barco de carga)</td></tr>
+        <tr><td>Piezas físicas</td><td>45 vagones por jugador</td><td>40 barcos por jugador</td></tr>
+        <tr><td>Reclamo de rutas</td><td>Rutas marcadas con icono tren</td><td>Rutas marcadas con icono barco</td></tr>
+        <tr><td>Comodín</td><td>Locomotora 🚂 (arcoíris)</td><td>Barco de carga ⚓ (arcoíris)</td></tr>
+      </table>
+      <div class="warn">⚠️ Las cartas de tren solo sirven para rutas de tren. Las cartas de barco solo sirven para rutas de barco. No son intercambiables.</div>
+    </div>
+  </div>
+
+  <div class="sec">Flujo de la partida</div>
+  <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px">
+    <div style="background:#080e18;border:1px solid #0d2a40;border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">🎯</span>
+      <div><div style="font-size:12px;color:#4ab8e8;font-weight:bold;margin-bottom:2px">Recibe tus Billetes de Destino secretos</div><div style="font-size:11px;color:#2a5878">Son tus objetivos privados: conectar dos ciudades vale X puntos al final</div></div>
+    </div>
+    <div style="background:#080e18;border:1px solid #0d2a40;border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">🃏</span>
+      <div><div style="font-size:12px;color:#4ab8e8;font-weight:bold;margin-bottom:2px">Acumula cartas de tren y/o barco</div><div style="font-size:11px;color:#2a5878">Toma cartas de los mazos o de la exhibición boca arriba</div></div>
+    </div>
+    <div style="background:#080e18;border:1px solid #0d2a40;border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">🗺️</span>
+      <div><div style="font-size:12px;color:#4ab8e8;font-weight:bold;margin-bottom:2px">Reclama rutas en el tablero</div><div style="font-size:11px;color:#2a5878">Paga cartas del color correcto para colocar tus piezas sobre una ruta</div></div>
+    </div>
+    <div style="background:#080e18;border:1px solid #0d2a40;border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:20px;flex-shrink:0">🏁</span>
+      <div><div style="font-size:12px;color:#4ab8e8;font-weight:bold;margin-bottom:2px">Cuando alguien se queda con ≤3 piezas</div><div style="font-size:11px;color:#2a5878">Todos juegan un turno más y luego se cuentan puntos</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <span>OBJETIVO: MÁS PUNTOS AL FINAL</span>
+    <span>2 TRANSPORTES · 1 ACCIÓN POR TURNO</span>
+  </footer>
+</div>
+
+<!-- ===== SETUP ===== -->
+<div id="tab-setup" class="tab-panel">
+
+  <div class="sec">Preparación general</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#4ab8e8">Paso a paso — Mapa Mundial</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="step"><div class="sn">1</div><div class="st">Coloca el tablero del <strong style="color:#4ab8e8">Mapa Mundial</strong> en el centro de la mesa.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Cada jugador toma sus piezas de un color: <strong style="color:#4ab8e8">45 vagones de tren</strong> + <strong style="color:#4ae8b8">40 barcos</strong> + <strong style="color:#e8c84a">3 puertos</strong>.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Baraja las cartas de tren y las cartas de barco en dos mazos separados. Coloca 5 cartas de tren boca arriba (exhibición de trenes) y 5 cartas de barco boca arriba (exhibición de barcos).</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Reparte a cada jugador <strong style="color:#4ab8e8">4 cartas de tren</strong> + <strong style="color:#4ae8b8">4 cartas de barco</strong>, boca abajo.</div></div>
+      <div class="step"><div class="sn">5</div><div class="st">Baraja los Billetes de Destino Largos y reparte <strong>1 por jugador</strong> (todos deben guardarlo obligatoriamente).</div></div>
+      <div class="step"><div class="sn">6</div><div class="st">Baraja los Billetes de Destino normales y reparte <strong>3 por jugador</strong> — guarda al menos 1, puedes descartar los demás.</div></div>
+      <div class="step"><div class="sn">7</div><div class="st">El jugador que más viajes en tren haya hecho empieza (o elegid de otra forma). Coloca los marcadores de puntuación de todos en el 0 del track de puntos.</div></div>
+      <div class="warn">⚠️ Si en la exhibición inicial aparecen 3 o más locomotoras/barcos de carga, descártalas, repón y vuelve a revelar hasta que haya menos de 3.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#44cc88">Preparación — Grandes Lagos</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Igual que el Mapa Mundial con estas diferencias:</div>
+      <div class="step"><div class="sn">1</div><div class="st">Cada jugador toma <strong style="color:#4ab8e8">40 vagones de tren</strong> + <strong style="color:#4ae8b8">30 barcos</strong> + <strong style="color:#e8c84a">3 puertos</strong>.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Reparte <strong>4 cartas de tren + 4 cartas de barco</strong> por jugador.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st"><strong>No hay</strong> Billetes de Destino Largos. Reparte directamente 4 Billetes normales — guarda al menos 2.</div></div>
+      <div class="tip">💡 Los Grandes Lagos son más tensos y rápidos: el espacio es más limitado y las rutas más cortas.</div>
+    </div>
+  </div>
+
+  <div class="sec">Componentes de referencia</div>
+  <table>
+    <tr><th>Componente</th><th>Mapa Mundial</th><th>Grandes Lagos</th></tr>
+    <tr><td>🚂 Vagones por jugador</td><td>45</td><td>40</td></tr>
+    <tr><td>🚢 Barcos por jugador</td><td>40</td><td>30</td></tr>
+    <tr><td>⚓ Puertos por jugador</td><td>3</td><td>3</td></tr>
+    <tr><td>🎴 Cartas de tren iniciales</td><td>4</td><td>4</td></tr>
+    <tr><td>🎴 Cartas de barco iniciales</td><td>4</td><td>4</td></tr>
+    <tr><td>🎯 Billetes obligatorios</td><td>1 Largo + al menos 1 normal</td><td>Al menos 2 normales</td></tr>
+    <tr><td>🃏 Exhibición de trenes</td><td>5 boca arriba</td><td>5 boca arriba</td></tr>
+    <tr><td>🃏 Exhibición de barcos</td><td>5 boca arriba</td><td>5 boca arriba</td></tr>
+  </table>
+
+  <footer>
+    <span>CADA JUGADOR: TRENES + BARCOS + PUERTOS</span>
+    <span>DOS EXHIBICIONES SEPARADAS</span>
+  </footer>
+</div>
+
+<!-- ===== TURNO ===== -->
+<div id="tab-turno" class="tab-panel">
+
+  <div class="sec">En tu turno — elige UNA acción</div>
+  <div class="desc">Cada turno realizas <strong style="color:#4ab8e8">exactamente una</strong> de estas 6 acciones:</div>
+
+  <div class="action-card open" onclick="toggleAction(this)">
+    <div class="action-hd">
+      <span class="action-icon">🃏</span>
+      <div>
+        <div class="action-name">Robar Cartas de Tren</div>
+        <div class="action-sub">Acción 1 · La más común</div>
+      </div>
+      <span class="action-chev">▼</span>
+    </div>
+    <div class="action-body">
+      <div class="desc">Toma <strong>2 cartas de tren</strong>. Puedes tomarlas de la exhibición (boca arriba) o del mazo (boca abajo), en cualquier combinación.</div>
+      <div class="step"><div class="sn">→</div><div class="st">Si tomas una <strong style="color:#4ab8e8">Locomotora</strong> de la exhibición, esa locomotora cuenta como las 2 cartas — no puedes tomar una segunda carta ese turno.</div></div>
+      <div class="step"><div class="sn">→</div><div class="st">Si tomas del mazo, robas la carta boca abajo sin verla antes.</div></div>
+      <div class="warn">⚠️ Una locomotora del mazo (boca abajo) cuenta solo como 1 carta normal en esta acción.</div>
+      <div class="tip">💡 Cuando tomes de la exhibición, rellena inmediatamente el hueco con una nueva carta del mazo. Si aparecen 3 o más locomotoras en la exhibición, descarta todo y repón.</div>
+    </div>
+  </div>
+
+  <div class="action-card" onclick="toggleAction(this)">
+    <div class="action-hd">
+      <span class="action-icon">🚢</span>
+      <div>
+        <div class="action-name">Robar Cartas de Barco</div>
+        <div class="action-sub">Acción 2 · Igual que trenes, pero barcos</div>
+      </div>
+      <span class="action-chev">▼</span>
+    </div>
+    <div class="action-body">
+      <div class="desc">Toma <strong>2 cartas de barco</strong> de la exhibición de barcos o del mazo de barcos. Funciona exactamente igual que robar cartas de tren, pero del pool de barcos.</div>
+      <div class="step"><div class="sn">→</div><div class="st">Un <strong style="color:#4ae8b8">Barco de Carga</strong> (comodín) de la exhibición cuenta como las 2 cartas — no puedes tomar segunda carta ese turno.</div></div>
+      <div class="warn">⚠️ No puedes mezclar la acción: si robas cartas de barco, solo robas de la exhibición/mazo de barcos. No puedes tomar 1 de tren + 1 de barco en el mismo turno.</div>
+    </div>
+  </div>
+
+  <div class="action-card" onclick="toggleAction(this)">
+    <div class="action-hd">
+      <span class="action-icon">🛤️</span>
+      <div>
+        <div class="action-name">Reclamar una Ruta de Tren</div>
+        <div class="action-sub">Acción 3 · Coloca vagones en el tablero</div>
+      </div>
+      <span class="action-chev">▼</span>
+    </div>
+    <div class="action-body">
+      <div class="desc">Elige una ruta de tren libre en el tablero. Descarta tantas cartas de tren del color de esa ruta como segmentos tenga, y coloca tus vagones sobre esa ruta.</div>
+      <div class="step"><div class="sn">1</div><div class="st">Elige una ruta de tren no reclamada (icono de tren junto a la ruta).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Paga cartas del <strong>color correcto</strong>: una carta por cada segmento. Las rutas grises/blancas se pagan con cualquier color (pero todo del mismo color).</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Puedes usar <strong style="color:#4ab8e8">Locomotoras</strong> como comodín para sustituir cualquier carta de tren.</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Coloca tus vagones de tren sobre esa ruta y avanza tu marcador en el track de puntos según la longitud de la ruta.</div></div>
+      <div class="tip">💡 Anotas los puntos de ruta <strong>inmediatamente</strong> al reclamarla, no al final del juego.</div>
+    </div>
+  </div>
+
+  <div class="action-card" onclick="toggleAction(this)">
+    <div class="action-hd">
+      <span class="action-icon">⛵</span>
+      <div>
+        <div class="action-name">Reclamar una Ruta de Barco</div>
+        <div class="action-sub">Acción 4 · Coloca barcos en el tablero</div>
+      </div>
+      <span class="action-chev">▼</span>
+    </div>
+    <div class="action-body">
+      <div class="desc">Igual que reclamar una ruta de tren, pero con rutas de barco (icono de barco). Pagas cartas de barco del color correcto y colocas tus barcos.</div>
+      <div class="step"><div class="sn">1</div><div class="st">Elige una ruta de barco libre (icono ancla/barco junto a la ruta).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Paga cartas de barco del color correcto (una por segmento).</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Puedes usar <strong style="color:#4ae8b8">Barcos de Carga</strong> (comodín) para sustituir cualquier carta de barco.</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Coloca tus barcos sobre la ruta y puntúa inmediatamente según su longitud.</div></div>
+      <div class="warn">⚠️ Las cartas de tren no sirven para rutas de barco y viceversa.</div>
+    </div>
+  </div>
+
+  <div class="action-card" onclick="toggleAction(this)">
+    <div class="action-hd">
+      <span class="action-icon">🎯</span>
+      <div>
+        <div class="action-name">Robar Billetes de Destino</div>
+        <div class="action-sub">Acción 5 · Más objetivos</div>
+      </div>
+      <span class="action-chev">▼</span>
+    </div>
+    <div class="action-body">
+      <div class="desc">Roba 3 Billetes de Destino del mazo (normal). Debes <strong>guardar al menos 1</strong> y puedes devolver los demás al fondo del mazo.</div>
+      <div class="step"><div class="sn">→</div><div class="st">Los Billetes que guardes son tus nuevos objetivos secretos. Si los completas al final, suman puntos; si no, restan.</div></div>
+      <div class="tip">💡 Solo usa esta acción si tienes claro qué rutas puedes completar. Los billetes incompletos pueden costarte la partida.</div>
+    </div>
+  </div>
+
+  <div class="action-card" onclick="toggleAction(this)">
+    <div class="action-hd">
+      <span class="action-icon">⚓</span>
+      <div>
+        <div class="action-name">Colocar un Puerto</div>
+        <div class="action-sub">Acción 6 · Duplica un billete al final</div>
+      </div>
+      <span class="action-chev">▼</span>
+    </div>
+    <div class="action-body">
+      <div class="desc">Gasta 4 cartas del <strong>mismo color</strong> (de tren o de barco) para colocar uno de tus puertos en una ciudad portuaria del tablero (marcada con un símbolo de puerto).</div>
+      <div class="step"><div class="sn">1</div><div class="st">La ciudad de destino del puerto debe ser una <strong>ciudad portuaria</strong> libre (no ocupada por el puerto de otro jugador).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st">Paga 4 cartas del mismo color y del mismo tipo (todas de tren o todas de barco).</div></div>
+      <div class="step"><div class="sn">3</div><div class="st">Coloca tu puerto en esa ciudad. Al final del juego, <strong style="color:#e8c84a">doblas el valor de uno de tus Billetes de Destino</strong> que pase por esa ciudad (tú eliges cuál).</div></div>
+      <div class="warn">⚠️ Cada jugador puede colocar un máximo de 3 puertos. Los puertos no se puntúan si el billete elegido está incompleto.</div>
+      <div class="tip">💡 Los puertos son poderosísimos sobre billetes con valores altos (10–22 puntos). Úsalos para amplificar tus mejores destinos completados.</div>
+    </div>
+  </div>
+
+  <div class="sec">Trigger de fin de partida</div>
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#cc5533">🏁 ¿Cuándo termina el juego?</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">El juego termina cuando <strong>cualquier jugador</strong> se queda con <strong style="color:#cc5533">3 o menos vagones de tren</strong> O <strong style="color:#cc5533">3 o menos barcos</strong> al final de su turno.</div>
+      <div class="step"><div class="sn">→</div><div class="st">Todos los demás jugadores juegan <strong>un turno más</strong> para igualar el número de turnos.</div></div>
+      <div class="step"><div class="sn">→</div><div class="st">Luego se cuentan los puntos finales.</div></div>
+      <div class="tip">💡 Controla cuántas piezas les quedan a los demás: si alguien tiene pocas, puede disparar el final antes de que puedas completar tus billetes.</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>1 ACCIÓN POR TURNO · 6 OPCIONES</span>
+    <span>FIN: ≤3 TRENES O ≤3 BARCOS</span>
+  </footer>
+</div>
+
+<!-- ===== RUTAS ===== -->
+<div id="tab-rutas" class="tab-panel">
+
+  <div class="sec">Tipos de rutas en el tablero</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#4ab8e8">🗺️ ¿Cómo reconocer cada tipo?</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <table>
+        <tr><th>Tipo de ruta</th><th>Cómo se ve</th><th>Qué se usa</th></tr>
+        <tr><td>🚂 Ruta de Tren</td><td>Casillas en forma de vagón / líneas con icono tren</td><td>Cartas de tren + vagones</td></tr>
+        <tr><td>🚢 Ruta de Barco</td><td>Casillas redondeadas / líneas azules con icono barco</td><td>Cartas de barco + barcos</td></tr>
+        <tr><td>🎨 Ruta de color</td><td>Casillas del color de la ruta</td><td>Cartas del color exacto</td></tr>
+        <tr><td>⬜ Ruta gris/neutra</td><td>Casillas blancas o grises</td><td>Cualquier color, pero todo igual</td></tr>
+      </table>
+      <div class="info">📌 En partidas de 2 o 3 jugadores, si una ciudad tiene rutas dobles paralelas, solo puede reclamarse <strong>una de las dos</strong> por cada jugador. En 4–5 jugadores, pueden reclamarse las dos rutas paralelas por jugadores distintos.</div>
+    </div>
+  </div>
+
+  <div class="sec">Tabla de puntuación por longitud de ruta</div>
+  <table>
+    <tr><th>Segmentos</th><th>Puntos</th></tr>
+    <tr><td>1 segmento</td><td class="pts-high">1 punto</td></tr>
+    <tr><td>2 segmentos</td><td class="pts-high">2 puntos</td></tr>
+    <tr><td>3 segmentos</td><td class="pts-high">4 puntos</td></tr>
+    <tr><td>4 segmentos</td><td class="pts-high">7 puntos</td></tr>
+    <tr><td>5 segmentos</td><td class="pts-high">10 puntos</td></tr>
+    <tr><td>6 segmentos</td><td class="pts-high">15 puntos</td></tr>
+    <tr><td>7 segmentos</td><td class="pts-high">18 puntos</td></tr>
+    <tr><td>8 segmentos</td><td class="pts-high">21 puntos</td></tr>
+  </table>
+  <div class="tip">💡 Las rutas largas son muy rentables. Una ruta de 6 = 15 puntos vs seis rutas de 1 = 6 puntos. Prioriza las rutas largas cuando puedas.</div>
+
+  <div class="sec">Comodines (Locomotoras y Barcos de Carga)</div>
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#e8c84a">🃏 ¿Cómo funcionan los comodines?</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Tanto la <strong style="color:#4ab8e8">Locomotora</strong> (trenes) como el <strong style="color:#4ae8b8">Barco de Carga</strong> (barcos) son comodines de su tipo.</div>
+      <div class="step"><div class="sn">→</div><div class="st">Al <strong>reclamar rutas</strong>: sustituyen cualquier carta del color requerido (1 comodín = 1 carta de cualquier color).</div></div>
+      <div class="step"><div class="sn">→</div><div class="st">Al <strong>robar de la exhibición</strong>: si coges un comodín boca arriba, cuenta como las 2 cartas de tu turno (no puedes tomar otra carta).</div></div>
+      <div class="step"><div class="sn">→</div><div class="st">Si robas un comodín del <strong>mazo</strong> (boca abajo), solo cuenta como 1 carta.</div></div>
+      <div class="warn">⚠️ Si en la exhibición aparecen 3 o más comodines simultáneamente, descarta toda la exhibición y repón con cartas nuevas del mazo.</div>
+    </div>
+  </div>
+
+  <div class="sec">Rutas dobles paralelas</div>
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#4ab8e8">🛤️🛤️ Regla de rutas paralelas</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Algunas ciudades están conectadas por dos rutas paralelas (del mismo o distinto tipo).</div>
+      <table>
+        <tr><th>Nº de jugadores</th><th>Rutas paralelas</th></tr>
+        <tr><td>2–3 jugadores</td><td>Solo una de las dos rutas puede ser reclamada (por cualquier jugador)</td></tr>
+        <tr><td>4–5 jugadores</td><td>Ambas rutas paralelas pueden ser reclamadas por jugadores distintos</td></tr>
+      </table>
+      <div class="warn">⚠️ Un mismo jugador nunca puede reclamar las dos rutas paralelas entre las mismas ciudades.</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>PUNTOS: 1=1 · 2=2 · 3=4 · 4=7 · 5=10 · 6=15</span>
+    <span>RUTAS LARGAS VALEN MUCHO MÁS</span>
+  </footer>
+</div>
+
+<!-- ===== DESTINOS Y PUERTOS ===== -->
+<div id="tab-destinos" class="tab-panel">
+
+  <div class="sec">Billetes de Destino</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#4ab8e8">🎯 ¿Cómo funcionan los billetes?</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Un Billete de Destino muestra dos ciudades y un valor. Al final del juego:</div>
+      <div class="step"><div class="sn">✅</div><div class="st">Si tienes una ruta continua de trenes y/o barcos que conecta las dos ciudades → <strong style="color:#44cc88">sumas ese valor</strong> a tu puntuación.</div></div>
+      <div class="step"><div class="sn">❌</div><div class="st">Si la ruta no está completa → <strong style="color:#cc5533">restas ese valor</strong> de tu puntuación.</div></div>
+      <div class="info">📌 La ruta no tiene que ser directa; puedes usar cualquier combinación de tus rutas de tren y barco para conectar las ciudades, siempre que formen una cadena continua.</div>
+      <div class="tip">💡 Puedes mezclar trenes y barcos para completar un billete, siempre que las rutas formen una conexión continua entre las dos ciudades.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#e8c84a">📜 Billetes Largos (solo Mapa Mundial)</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Los Billetes de Destino Largos conectan ciudades muy distantes y valen muchos puntos (valores altos de 20+).</div>
+      <div class="step"><div class="sn">→</div><div class="st">Cada jugador <strong>debe guardar obligatoriamente</strong> el Billete Largo que recibe al inicio (no puede descartarlo).</div></div>
+      <div class="step"><div class="sn">→</div><div class="st">Son los objetivos más ambiciosos y más difíciles. Orientan toda tu estrategia de conexión.</div></div>
+      <div class="warn">⚠️ Si dejas un Billete Largo incompleto, la penalización de puntos puede hundirte. Priorízalo siempre.</div>
+    </div>
+  </div>
+
+  <div class="sec">Puertos ⚓</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#e8c84a">⚓ Puertos — Cómo doblan tus billetes</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Cada jugador comienza con <strong style="color:#e8c84a">3 puertos</strong>. Colocar un puerto en una ciudad portuaria durante el juego te permite <strong>doblar el valor de un billete</strong> al final.</div>
+      <div class="step"><div class="sn">1</div><div class="st"><strong>Coste:</strong> 4 cartas del mismo color y del mismo tipo (todas de tren o todas de barco).</div></div>
+      <div class="step"><div class="sn">2</div><div class="st"><strong>Dónde:</strong> Solo en ciudades marcadas como portuarias (símbolo de ancla o puerto en el tablero) que estén libres.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st"><strong>Efecto al final del juego:</strong> Elige uno de tus Billetes de Destino <em>completados</em> que tenga esa ciudad como origen o destino — su valor cuenta el doble.</div></div>
+      <div class="step"><div class="sn">4</div><div class="st">Si tienes varios puertos, cada uno puede doblar un billete diferente (o el mismo si te conviene más).</div></div>
+      <div class="warn">⚠️ El puerto NO funciona si el billete elegido está incompleto — no puedes doblar una penalización.</div>
+      <div class="tip">💡 Coloca puertos en ciudades que ya sabes que aparecen en tus billetes de mayor valor. Un billete de 22 puntos doblado vale 44 puntos — puede decidir la partida.</div>
+    </div>
+  </div>
+
+  <div class="sec">Referencia rápida de billetes</div>
+  <table>
+    <tr><th>Tipo</th><th>Cuándo se recibe</th><th>¿Puede descartarse?</th><th>Valor típico</th></tr>
+    <tr><td>Billete Normal</td><td>Al inicio (3–4) o en turno</td><td>Sí, algunos al inicio</td><td>6–22 puntos</td></tr>
+    <tr><td>Billete Largo</td><td>Al inicio (1 por jugador)</td><td>No, obligatorio</td><td>20–28 puntos</td></tr>
+  </table>
+
+  <footer>
+    <span>BILLETES COMPLETADOS: SUMAN · INCOMPLETOS: RESTAN</span>
+    <span>PUERTO: DOBLA 1 BILLETE COMPLETADO</span>
+  </footer>
+</div>
+
+<!-- ===== PUNTUACIÓN ===== -->
+<div id="tab-puntuacion" class="tab-panel">
+
+  <div class="sec">Puntuación durante la partida</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#4ab8e8">📈 Puntos que se anotan en el momento</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="desc">Cada vez que reclamas una ruta (de tren o barco), avanzas inmediatamente tu marcador en el track de puntos según la longitud de la ruta:</div>
+      <table>
+        <tr><th>Segmentos</th><th>Puntos inmediatos</th></tr>
+        <tr><td>1</td><td>1</td></tr>
+        <tr><td>2</td><td>2</td></tr>
+        <tr><td>3</td><td>4</td></tr>
+        <tr><td>4</td><td>7</td></tr>
+        <tr><td>5</td><td>10</td></tr>
+        <tr><td>6</td><td>15</td></tr>
+        <tr><td>7</td><td>18</td></tr>
+        <tr><td>8</td><td>21</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="sec">Puntuación final (al terminar el juego)</div>
+  <div class="card open">
+    <div class="card-hd" onclick="toggleCard(this)"><span class="ct" style="color:#4ab8e8">🏆 Recuento final — en este orden</span><span class="cc">▼</span></div>
+    <div class="card-body">
+      <div class="step"><div class="sn">1</div><div class="st"><strong style="color:#44cc88">+ Billetes completados:</strong> Suma los puntos de cada Billete de Destino cuyas ciudades estén conectadas por tus rutas.</div></div>
+      <div class="step"><div class="sn">2</div><div class="st"><strong style="color:#cc5533">− Billetes incompletos:</strong> Resta los puntos de cada Billete de Destino que no hayas podido completar.</div></div>
+      <div class="step"><div class="sn">3</div><div class="st"><strong style="color:#e8c84a">+ Bonus de Puertos:</strong> Por cada puerto colocado, elige un Billete de Destino completado que pase por esa ciudad y dobla su valor (suma la cantidad original una segunda vez).</div></div>
+      <div class="step"><div class="sn">4</div><div class="st"><strong style="color:#4ab8e8">+ Ruta de Tren más larga:</strong> El jugador con la cadena continua de vagones de tren más larga gana <strong>+10 puntos</strong> (bonus global, solo uno lo gana).</div></div>
+      <div class="step"><div class="sn">5</div><div class="st"><strong style="color:#4ae8b8">+ Ruta de Barco más larga:</strong> El jugador con la cadena continua de barcos más larga gana <strong>+10 puntos</strong> (bonus global, solo uno lo gana).</div></div>
+      <div class="info">📌 En caso de empate en la ruta más larga (tren o barco), todos los jugadores empatados reciben el bonus de +10 puntos.</div>
+    </div>
+  </div>
+
+  <div class="sec">Resumen de fuentes de puntos</div>
+  <table>
+    <tr><th>Fuente</th><th>Cuándo</th><th>Puntos</th></tr>
+    <tr><td>🛤️ Reclamar una ruta</td><td>Inmediato</td><td>1–21 según longitud</td></tr>
+    <tr><td>✅ Billete completado</td><td>Final</td><td>Valor del billete (6–28)</td></tr>
+    <tr><td>❌ Billete incompleto</td><td>Final</td><td>−Valor del billete</td></tr>
+    <tr><td>⚓ Puerto (billete doblado)</td><td>Final</td><td>+Valor del billete elegido</td></tr>
+    <tr><td>🚂 Ruta de tren más larga</td><td>Final</td><td>+10 puntos</td></tr>
+    <tr><td>🚢 Ruta de barco más larga</td><td>Final</td><td>+10 puntos</td></tr>
+  </table>
+
+  <div class="sec">Desempate</div>
+  <div class="info">🏆 En caso de empate en puntos → gana quien tenga más <strong>Billetes de Destino completados</strong>. Si sigue el empate, ambos comparten la victoria.</div>
+
+  <footer>
+    <span>RUTAS: PUNTOS INMEDIATOS · BILLETES + PUERTOS: FINAL</span>
+    <span>RUTA MÁS LARGA (TREN + BARCO): +10 PUNTOS CADA UNA</span>
+  </footer>
+</div>
+
+<!-- ===== ESTRATEGIA ===== -->
+<div id="tab-estrategia" class="tab-panel">
+
+  <div class="sec">Principios básicos</div>
+
+  <div class="strat-card">
+    <div class="strat-title">🎯 Prioriza tu Billete Largo desde el inicio</div>
+    <div class="strat-text">El Billete Largo (Mapa Mundial) es obligatorio y tiene un valor enorme. Si lo dejas incompleto puede costarte 20+ puntos negativos. Construye tu plan de rutas con él como columna vertebral y añade rutas secundarias alrededor.</div>
+  </div>
+
+  <div class="strat-card">
+    <div class="strat-title">🛤️ Las rutas largas son oro puro</div>
+    <div class="strat-text">Una ruta de 6 segmentos vale 15 puntos. Seis rutas de 1 segmento valen solo 6 puntos con el mismo número de piezas. Siempre que puedas, conecta con rutas largas: son más eficientes en puntos y en piezas gastadas.</div>
+  </div>
+
+  <div class="strat-card">
+    <div class="strat-title">⚓ Coloca puertos en tus billetes más valiosos</div>
+    <div class="strat-text">Un puerto puede doblar un billete de 20 puntos a 40. Esto es enorme. Identifica desde el inicio qué ciudades de tus billetes de mayor valor son puertos y trabaja para colocar tus puertos ahí antes de que los rivales los ocupen.</div>
+  </div>
+
+  <div class="strat-card">
+    <div class="strat-title">🚂 Gestiona tus dos pools de cartas</div>
+    <div class="strat-text">Tienes mano de trenes y mano de barcos. Evita acumular demasiadas cartas de un tipo que no usarás pronto. Roba cartas del tipo que necesites a continuación. No desperdicies turnos robando cartas que no encajan con tus rutas planeadas.</div>
+  </div>
+
+  <div class="strat-card">
+    <div class="strat-title">👁️ Vigila cuántas piezas quedan a los rivales</div>
+    <div class="strat-text">El juego termina cuando alguien llega a ≤3 trenes O ≤3 barcos. Si un rival está gastando piezas rápido, el final puede dispararse antes de que completes tus billetes. Si estás cerca de lograrlo tú antes, acelera para controlar el final.</div>
+  </div>
+
+  <div class="strat-card">
+    <div class="strat-title">🔄 Equilibra trenes y barcos según tus billetes</div>
+    <div class="strat-text">Analiza qué tipo de rutas necesitas para cada billete: ¿más trenes o más barcos? Si tus billetes cruzan océanos, necesitarás barcos. Si son rutas interiores, trenes. No inviertas igual en ambos si uno de los dos te sirve mucho más.</div>
+  </div>
+
+  <div class="strat-card">
+    <div class="strat-title">🚫 Errores comunes</div>
+    <div class="strat-text">
+      • No acumules demasiados billetes sin analizar si los puedes completar todos.<br>
+      • No olvides que los billetes incompletos restan — a veces es mejor no robar más.<br>
+      • No descuides los bonus de Ruta Más Larga: +10 puntos sin coste puede decidir el juego.<br>
+      • No coloques puertos en ciudades que no aparezcan en tus billetes de alto valor.
+    </div>
+  </div>
+
+  <div class="sec">Diferencias clave entre mapas</div>
+  <table>
+    <tr><th>Aspecto</th><th>🌍 Mapa Mundial</th><th>🌊 Grandes Lagos</th></tr>
+    <tr><td>Duración</td><td>Más larga (90–120 min)</td><td>Más corta (60–90 min)</td></tr>
+    <tr><td>Billetes largos</td><td>Sí, obligatorios</td><td>No existen</td></tr>
+    <tr><td>Piezas iniciales</td><td>45 trenes + 40 barcos</td><td>40 trenes + 30 barcos</td></tr>
+    <tr><td>Ritmo</td><td>Más épico, más espacio</td><td>Más táctico, más bloqueo</td></tr>
+    <tr><td>Tensión por espacio</td><td>Media</td><td>Alta</td></tr>
+  </table>
+
+  <footer>
+    <span>PRIORIDAD: BILLETE LARGO → RUTAS LARGAS → PUERTOS</span>
+    <span>CONTROLA EL FINAL: VIGILA LAS PIEZAS RIVALES</span>
+  </footer>
+</div>
+
+</div><!-- /container -->
+
+<script>
+function toggleCard(header){header.parentElement.classList.toggle('open')}
+function toggleAction(card){card.classList.toggle('open')}
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
